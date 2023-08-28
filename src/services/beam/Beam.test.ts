@@ -13,11 +13,12 @@ describe('Beam', () => {
         x: 30,
         fx: 30,
       }
+      const negativeXLoad: Load = {
+        x: -3,
+        fy: -11,
+      }
       expect(() => beam.addLoad(overBoundsLoad)).toThrowError()
-    })
-
-    it('does not allow negative x loads to be added', () => {
-      expect(() => beam.addLoad)
+      expect(() => beam.addLoad(negativeXLoad)).toThrowError()
     })
 
     it('allows loads to be added on the boundary', () => {
