@@ -1,6 +1,9 @@
 export type Load = {
   x: number
-} & ({ fx: number } | { fy: number } | { mz: number })
+  fx: number
+  fy: number
+  mz: number
+}
 
 export default class Beam {
   length: number

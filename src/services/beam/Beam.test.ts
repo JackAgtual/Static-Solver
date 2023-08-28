@@ -12,24 +12,35 @@ describe('Beam', () => {
       const overBoundsLoad: Load = {
         x: 30,
         fx: 30,
+        fy: 0,
+        mz: 0,
       }
       const negativeXLoad: Load = {
         x: -3,
+        fx: 0,
         fy: -11,
+        mz: 0,
       }
       expect(() => beam.addLoad(overBoundsLoad)).toThrowError()
       expect(() => beam.addLoad(negativeXLoad)).toThrowError()
     })
 
     it('allows loads to be added on the boundary', () => {
-      const boundaryLoad: Load = { x: beamLength, fy: -200 }
+      const boundaryLoad: Load = {
+        x: beamLength,
+        fx: 0,
+        fy: -200,
+        mz: 0,
+      }
       expect(() => beam.addLoad(boundaryLoad)).not.toThrowError()
     })
 
     it('adds load to beam instance', () => {
       const goodLoad: Load = {
         x: 10,
+        fx: 0,
         fy: 200,
+        mz: 0,
       }
       beam.addLoad(goodLoad)
       expect(beam.loads.length).toBe(1)
