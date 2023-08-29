@@ -1,16 +1,22 @@
-export type Load = {
+import { v4 as uuidv4 } from 'uuid'
+
+export type NewLoad = {
   x: number
   fx: number
   fy: number
   mz: number
 }
 
-export type Support = {
+export type Load = NewLoad & { id: string }
+
+export type NewSupport = {
   x: number
   rfx: boolean
   rfy: boolean
   rmz: boolean
 }
+
+export type Support = NewSupport & { id: string }
 
 export default class Beam {
   length: number
@@ -31,14 +37,15 @@ export default class Beam {
     return this.#supports
   }
 
-  addLoad(load: Load) {
+  addLoad(load: NewLoad) {
     if (load.x < 0 || load.x > this.length) {
       throw new Error('Load is outside bounds')
     }
-    this.#loads.push(load)
+
+    this.#loads.push({ id: uuidv4(), ...load })
   }
 
-  #supportAlreadyExists(support: Support) {
+  #supportAlreadyExists(support: NewSupport) {
     console.log('support: ', support)
     const supportsAtSameLocation = this.#supports.filter(
       (existingSupport) => existingSupport.x === support.x,
@@ -55,7 +62,7 @@ export default class Beam {
     return false
   }
 
-  addSupport(support: Support) {
+  addSupport(support: NewSupport) {
     if (support.x < 0 || support.x > this.length) {
       throw new Error('Support outside bounds')
     }
@@ -64,6 +71,6 @@ export default class Beam {
       throw new Error('Support already exists')
     }
 
-    this.#supports.push(support)
+    this.#supports.push({ id: uuidv4(), ...support })
   }
 }

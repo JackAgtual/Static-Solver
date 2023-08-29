@@ -1,4 +1,4 @@
-import Beam, { Load, Support } from './Beam'
+import Beam, { NewLoad, NewSupport } from './Beam'
 
 describe('Beam', () => {
   const beamLength = 20
@@ -9,13 +9,13 @@ describe('Beam', () => {
 
   describe('addLoad', () => {
     it('does not allow loads to be applied off of the beam', () => {
-      const overBoundsLoad: Load = {
+      const overBoundsLoad: NewLoad = {
         x: 30,
         fx: 30,
         fy: 0,
         mz: 0,
       }
-      const negativeXLoad: Load = {
+      const negativeXLoad: NewLoad = {
         x: -3,
         fx: 0,
         fy: -11,
@@ -26,7 +26,7 @@ describe('Beam', () => {
     })
 
     it('allows loads to be added on the boundary', () => {
-      const boundaryLoad: Load = {
+      const boundaryLoad: NewLoad = {
         x: beamLength,
         fx: 0,
         fy: -200,
@@ -36,7 +36,7 @@ describe('Beam', () => {
     })
 
     it('adds load to beam instance', () => {
-      const goodLoad: Load = {
+      const goodLoad: NewLoad = {
         x: 10,
         fx: 0,
         fy: 200,
@@ -44,10 +44,13 @@ describe('Beam', () => {
       }
       beam.addLoad(goodLoad)
       expect(beam.loads.length).toBe(1)
+      const addedLoad = beam.loads[0]
+      expect(addedLoad.hasOwnProperty('id')).toBeTruthy()
+      expect(addedLoad.id).toBeTruthy()
     })
 
     it('can add a load at the same location', () => {
-      const repeatLoad: Load = {
+      const repeatLoad: NewLoad = {
         x: 15,
         fx: -30,
         fy: 1000,
@@ -61,13 +64,13 @@ describe('Beam', () => {
 
   describe('addSupport', () => {
     it('does not add supports out of bounds', () => {
-      const negativeXSupport: Support = {
+      const negativeXSupport: NewSupport = {
         x: -1,
         rfx: true,
         rfy: false,
         rmz: false,
       }
-      const outOfBoundsSupport: Support = {
+      const outOfBoundsSupport: NewSupport = {
         x: beamLength + 3,
         rfx: false,
         rfy: false,
@@ -79,13 +82,13 @@ describe('Beam', () => {
     })
 
     it('adds valid support to beam instance', () => {
-      const validSupport1: Support = {
+      const validSupport1: NewSupport = {
         x: 4,
         rfx: true,
         rfy: true,
         rmz: false,
       }
-      const validSupport2: Support = {
+      const validSupport2: NewSupport = {
         x: 5,
         rfx: false,
         rfy: true,
@@ -95,16 +98,19 @@ describe('Beam', () => {
       expect(beam.supports.length).toBe(1)
       beam.addSupport(validSupport2)
       expect(beam.supports.length).toBe(2)
+      const addedSupport = beam.supports[1]
+      expect(addedSupport.hasOwnProperty('id')).toBeTruthy()
+      expect(addedSupport.id).toBeTruthy()
     })
 
     it('does not allow repeat supports', () => {
-      const existingLoad: Support = {
+      const existingLoad: NewSupport = {
         x: 10,
         rfx: true,
         rfy: false,
         rmz: false,
       }
-      const repeatSupport: Support = {
+      const repeatSupport: NewSupport = {
         x: 10,
         rfx: true,
         rfy: false,
@@ -116,19 +122,19 @@ describe('Beam', () => {
 
     it('allows supports to be added one component at a time', () => {
       const x = 10
-      const rxSupport: Support = {
+      const rxSupport: NewSupport = {
         x,
         rfx: true,
         rfy: false,
         rmz: false,
       }
-      const rySupport: Support = {
+      const rySupport: NewSupport = {
         x,
         rfx: false,
         rfy: true,
         rmz: false,
       }
-      const rmzSupport: Support = {
+      const rmzSupport: NewSupport = {
         x,
         rfx: false,
         rfy: false,
