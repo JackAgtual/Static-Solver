@@ -1,20 +1,4 @@
-export type NewLoad = {
-  x: number
-  fx: number
-  fy: number
-  mz: number
-}
-
-export type Load = NewLoad & { id: number }
-
-export type NewSupport = {
-  x: number
-  rfx: boolean
-  rfy: boolean
-  rmz: boolean
-}
-
-export type Support = NewSupport & { id: number }
+import { Load, NewLoad, Support, NewSupport } from '../../types/staticAnalysis'
 
 export default class Beam {
   length: number
