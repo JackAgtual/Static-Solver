@@ -40,10 +40,18 @@ export default class Beam {
       throw new Error('Load is outside bounds')
     }
 
+    if (this.#loadAlreadyExistsAtLocation(load)) {
+      throw new Error('Load already exists at location')
+    }
+
     const id = this.#loads.length + 1
 
     this.#loads.push({ id, ...load })
     return this.#loads
+  }
+
+  #loadAlreadyExistsAtLocation(newLoad: NewLoad) {
+    return this.#loads.some((existingLoad) => existingLoad.x === newLoad.x)
   }
 
   #supportAlreadyExistsAtLocation(newSupport: NewSupport) {

@@ -49,16 +49,22 @@ describe('Beam', () => {
       expect(addedLoad.id).toBeTruthy()
     })
 
-    it('can add a load at the same location', () => {
-      const repeatLoad: NewLoad = {
+    it('does not allow a load to be added at the same location', () => {
+      const load: NewLoad = {
         x: 15,
         fx: -30,
         fy: 1000,
         mz: 10,
       }
-      beam.addLoad(repeatLoad)
-      beam.addLoad(repeatLoad)
-      expect(beam.loads.length).toBe(2)
+      const loadAtSameLocation: NewLoad = {
+        x: 15,
+        fx: 0,
+        fy: 0,
+        mz: 300,
+      }
+      beam.addLoad(load)
+      expect(() => beam.addLoad(loadAtSameLocation)).toThrowError()
+      expect(beam.loads).toHaveLength(1)
     })
 
     it('generates an enumerated id for the load', () => {
