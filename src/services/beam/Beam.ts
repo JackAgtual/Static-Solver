@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid'
-
 export type NewLoad = {
   x: number
   fx: number
@@ -7,7 +5,7 @@ export type NewLoad = {
   mz: number
 }
 
-export type Load = NewLoad & { id: string }
+export type Load = NewLoad & { id: number }
 
 export type NewSupport = {
   x: number
@@ -16,7 +14,7 @@ export type NewSupport = {
   rmz: boolean
 }
 
-export type Support = NewSupport & { id: string }
+export type Support = NewSupport & { id: number }
 
 export default class Beam {
   length: number
@@ -42,7 +40,10 @@ export default class Beam {
       throw new Error('Load is outside bounds')
     }
 
-    this.#loads.push({ id: uuidv4(), ...load })
+    const id = this.#loads.length + 1
+
+    this.#loads.push({ id, ...load })
+    return this.#loads
   }
 
   #supportAlreadyExists(support: NewSupport) {
@@ -58,6 +59,9 @@ export default class Beam {
       throw new Error('Support already exists')
     }
 
-    this.#supports.push({ id: uuidv4(), ...support })
+    const id = this.#supports.length + 1
+
+    this.#supports.push({ id, ...support })
+    return this.#supports
   }
 }

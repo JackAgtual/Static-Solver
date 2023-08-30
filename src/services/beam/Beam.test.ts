@@ -60,6 +60,28 @@ describe('Beam', () => {
       beam.addLoad(repeatLoad)
       expect(beam.loads.length).toBe(2)
     })
+
+    it('generates an enumerated id for the load', () => {
+      const load1: NewLoad = {
+        x: 1,
+        fx: 0,
+        fy: -200,
+        mz: 0,
+      }
+      const load2: NewLoad = {
+        x: 3,
+        fx: 0,
+        fy: -200,
+        mz: 0,
+      }
+
+      const oneLoad = beam.addLoad(load1)
+      const twoLoads = beam.addLoad(load2)
+
+      expect(oneLoad[0].id).toBe(1)
+      expect(twoLoads[0].id).toBe(1)
+      expect(twoLoads[1].id).toBe(2)
+    })
   })
 
   describe('addSupport', () => {
@@ -144,6 +166,27 @@ describe('Beam', () => {
       expect(() => beam.addSupport(rxSupport)).not.toThrowError()
       expect(() => beam.addSupport(rySupport)).toThrowError()
       expect(() => beam.addSupport(rmzSupport)).toThrowError()
+    })
+
+    it('generates an enumerated id for the support', () => {
+      const support1: NewSupport = {
+        x: 0,
+        rfx: true,
+        rfy: true,
+        rmz: false,
+      }
+      const support2: NewSupport = {
+        x: 10,
+        rfx: false,
+        rfy: true,
+        rmz: false,
+      }
+      const oneSupport = beam.addSupport(support1)
+      const twoSupports = beam.addSupport(support2)
+
+      expect(oneSupport[0].id).toBe(1)
+      expect(twoSupports[0].id).toBe(1)
+      expect(twoSupports[1].id).toBe(2)
     })
   })
 })
