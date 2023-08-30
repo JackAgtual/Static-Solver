@@ -46,8 +46,8 @@ export default class Beam {
     return this.#loads
   }
 
-  #supportAlreadyExists(support: NewSupport) {
-    return this.#supports.some((existingSupport) => existingSupport.x === support.x)
+  #supportAlreadyExistsAtLocation(newSupport: NewSupport) {
+    return this.#supports.some((existingSupport) => existingSupport.x === newSupport.x)
   }
 
   addSupport(support: NewSupport) {
@@ -55,8 +55,8 @@ export default class Beam {
       throw new Error('Support outside bounds')
     }
 
-    if (this.#supportAlreadyExists(support)) {
-      throw new Error('Support already exists')
+    if (this.#supportAlreadyExistsAtLocation(support)) {
+      throw new Error('Support already exists at location')
     }
 
     const id = this.#supports.length + 1
