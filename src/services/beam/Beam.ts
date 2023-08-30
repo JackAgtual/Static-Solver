@@ -46,20 +46,7 @@ export default class Beam {
   }
 
   #supportAlreadyExists(support: NewSupport) {
-    console.log('support: ', support)
-    const supportsAtSameLocation = this.#supports.filter(
-      (existingSupport) => existingSupport.x === support.x,
-    )
-    for (const existingSupport of supportsAtSameLocation) {
-      if (
-        (existingSupport.rfx && support.rfx) ||
-        (existingSupport.rfy && support.rfy) ||
-        (existingSupport.rmz && support.rmz)
-      ) {
-        return true
-      }
-    }
-    return false
+    return this.#supports.some((existingSupport) => existingSupport.x === support.x)
   }
 
   addSupport(support: NewSupport) {

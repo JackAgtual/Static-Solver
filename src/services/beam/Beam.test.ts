@@ -104,7 +104,7 @@ describe('Beam', () => {
     })
 
     it('does not allow repeat supports', () => {
-      const existingLoad: NewSupport = {
+      const existingSupport: NewSupport = {
         x: 10,
         rfx: true,
         rfy: false,
@@ -116,11 +116,12 @@ describe('Beam', () => {
         rfy: false,
         rmz: false,
       }
-      beam.addSupport(existingLoad)
+
+      beam.addSupport(existingSupport)
       expect(() => beam.addSupport(repeatSupport)).toThrowError()
     })
 
-    it('allows supports to be added one component at a time', () => {
+    it('does not allow supports to be added one component at a time', () => {
       const x = 10
       const rxSupport: NewSupport = {
         x,
@@ -141,8 +142,8 @@ describe('Beam', () => {
         rmz: true,
       }
       expect(() => beam.addSupport(rxSupport)).not.toThrowError()
-      expect(() => beam.addSupport(rySupport)).not.toThrowError()
-      expect(() => beam.addSupport(rmzSupport)).not.toThrowError()
+      expect(() => beam.addSupport(rySupport)).toThrowError()
+      expect(() => beam.addSupport(rmzSupport)).toThrowError()
     })
   })
 })
