@@ -25,7 +25,13 @@ describe('BeamAnalyzer', () => {
       expect(getSupportsMock).toHaveBeenCalledTimes(1)
     })
 
-    it.todo('throws error if system is not static')
+    it('throws error if system is not static', () => {
+      getSupportsMock.mockReturnValue([
+        { id: 1, x: 0, rfy: true, rfx: false, rmz: false },
+      ])
+      getLoadsMock.mockReturnValue([{ id: 1, x: 10, fx: 0, fy: -300, mz: 0 }])
+      expect(() => beamAnalyzer.solveReactionForces()).toThrowError()
+    })
 
     it('throws error if statically indeterminate', () => {
       getSupportsMock.mockReturnValue([
