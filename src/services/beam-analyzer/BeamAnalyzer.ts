@@ -64,7 +64,7 @@ export default class BeamAnalyzer {
 
       columnVector.set([0, 0], cur0 - load.fx)
       columnVector.set([1, 0], cur1 - load.fy)
-      columnVector.set([2, 0], cur2 - load.mz + load.fy * load.x)
+      columnVector.set([2, 0], cur2 - (load.mz + load.fy * load.x))
     }
 
     return columnVector
