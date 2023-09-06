@@ -15,9 +15,15 @@ describe('BeamAnalyzer', () => {
       getSupportsMock.mockClear()
     })
 
-    it.todo('gets loads from beam')
+    it('gets loads from beam', () => {
+      beamAnalyzer.solveReactionForces()
+      expect(getLoadsMock).toHaveBeenCalledTimes(1)
+    })
 
-    it.todo('gets supports from beam')
+    it('gets supports from beam', () => {
+      beamAnalyzer.solveReactionForces()
+      expect(getSupportsMock).toHaveBeenCalledTimes(1)
+    })
 
     it.todo('throws error if system is not static')
 
