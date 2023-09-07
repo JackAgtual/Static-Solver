@@ -1,4 +1,4 @@
-import Beam, { NewLoad, NewSupport } from './Beam'
+import Beam, { NewLoad, NewSupport, Load } from './Beam'
 
 describe('Beam', () => {
   const beamLength = 20
@@ -194,5 +194,97 @@ describe('Beam', () => {
       expect(twoSupports[0].id).toBe(1)
       expect(twoSupports[1].id).toBe(2)
     })
+  })
+
+  describe('removeLoad', () => {
+    let getLoadsMock = jest.spyOn(Beam.prototype, 'loads', 'get')
+
+    beforeEach(() => {
+      getLoadsMock.mockClear()
+    })
+
+    it('gets loads from the beam instance', () => {
+      beam.removeLoad(3)
+      expect(getLoadsMock).toBeCalledTimes(1)
+    })
+
+    it('does not remove a load if load id does not exist', () => {
+      const addedLoads: Load[] = [
+        {
+          id: 1,
+          x: 1,
+          fx: 0,
+          fy: 100,
+          mz: 0,
+        },
+        {
+          id: 2,
+          x: 1,
+          fx: 0,
+          fy: 100,
+          mz: 0,
+        },
+      ]
+      getLoadsMock.mockReturnValue(addedLoads)
+      const removedLoadThatDidntExist = beam.removeLoad(12)
+
+      expect(addedLoads).toEqual(expect.arrayContaining(removedLoadThatDidntExist))
+      expect(removedLoadThatDidntExist).toEqual(expect.arrayContaining(addedLoads))
+    })
+
+    it('removes an existing load from the beam instance', () => {
+      const addedLoads: Load[] = [
+        {
+          id: 1,
+          x: 1,
+          fx: 1,
+          fy: 1,
+          mz: 1,
+        },
+        {
+          id: 2,
+          x: 2,
+          fx: 2,
+          fy: 2,
+          mz: 2,
+        },
+        {
+          id: 3,
+          x: 3,
+          fx: 3,
+          fy: 3,
+          mz: 3,
+        },
+      ]
+
+      getLoadsMock.mockReturnValue(addedLoads)
+      const remainingLoads = beam.removeLoad(2)
+
+      const expectedRemainingLoads = [
+        {
+          id: 1,
+          x: 1,
+          fx: 1,
+          fy: 1,
+          mz: 1,
+        },
+        {
+          id: 2,
+          x: 3,
+          fx: 3,
+          fy: 3,
+          mz: 3,
+        },
+      ]
+
+      expect(expectedRemainingLoads).toEqual(expect.arrayContaining(remainingLoads))
+      expect(remainingLoads).toEqual(expect.arrayContaining(expectedRemainingLoads))
+    })
+  })
+
+  describe('removeSupport', () => {
+    it('gets loads from the beam instance')
+
+    it('does not modify loads if load id does not exist')
   })
 })

@@ -72,4 +72,15 @@ export default class Beam {
     this.#supports.push({ id, ...support })
     return this.#supports
   }
+
+  removeLoad(id: number): Load[] {
+    return this.loads
+      .filter((load) => load.id !== id)
+      .map((load, idx) => {
+        return {
+          ...load,
+          id: idx + 1,
+        }
+      })
+  }
 }
