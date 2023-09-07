@@ -83,4 +83,15 @@ export default class Beam {
         }
       })
   }
+
+  removeSupport(id: number): Support[] {
+    return this.supports
+      .filter((support) => support.id !== id)
+      .map((support, idx) => {
+        return {
+          ...support,
+          id: idx + 1,
+        }
+      })
+  }
 }
