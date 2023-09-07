@@ -1,5 +1,5 @@
 import Beam from './Beam'
-import { NewLoad, NewSupport } from '../../types/staticAnalysis'
+import { NewLoad, NewSupport, Load, Support } from '../../types/staticAnalysis'
 
 describe('Beam', () => {
   const beamLength = 20
@@ -194,6 +194,179 @@ describe('Beam', () => {
       expect(oneSupport[0].id).toBe(1)
       expect(twoSupports[0].id).toBe(1)
       expect(twoSupports[1].id).toBe(2)
+    })
+  })
+
+  describe('removeLoad', () => {
+    let getLoadsMock = jest.spyOn(Beam.prototype, 'loads', 'get')
+
+    beforeEach(() => {
+      getLoadsMock.mockClear()
+    })
+
+    it('gets loads from the beam instance', () => {
+      beam.removeLoad(3)
+      expect(getLoadsMock).toBeCalledTimes(1)
+    })
+
+    it('does not remove a load if load id does not exist', () => {
+      const addedLoads: Load[] = [
+        {
+          id: 1,
+          x: 1,
+          fx: 0,
+          fy: 100,
+          mz: 0,
+        },
+        {
+          id: 2,
+          x: 1,
+          fx: 0,
+          fy: 100,
+          mz: 0,
+        },
+      ]
+      getLoadsMock.mockReturnValue(addedLoads)
+      const removedLoadThatDidntExist = beam.removeLoad(12)
+
+      expect(addedLoads).toEqual(expect.arrayContaining(removedLoadThatDidntExist))
+      expect(removedLoadThatDidntExist).toEqual(expect.arrayContaining(addedLoads))
+    })
+
+    it('removes an existing load from the beam instance', () => {
+      const addedLoads: Load[] = [
+        {
+          id: 1,
+          x: 1,
+          fx: 1,
+          fy: 1,
+          mz: 1,
+        },
+        {
+          id: 2,
+          x: 2,
+          fx: 2,
+          fy: 2,
+          mz: 2,
+        },
+        {
+          id: 3,
+          x: 3,
+          fx: 3,
+          fy: 3,
+          mz: 3,
+        },
+      ]
+
+      getLoadsMock.mockReturnValue(addedLoads)
+      const remainingLoads = beam.removeLoad(2)
+
+      const expectedRemainingLoads = [
+        {
+          id: 1,
+          x: 1,
+          fx: 1,
+          fy: 1,
+          mz: 1,
+        },
+        {
+          id: 2,
+          x: 3,
+          fx: 3,
+          fy: 3,
+          mz: 3,
+        },
+      ]
+
+      expect(expectedRemainingLoads).toEqual(expect.arrayContaining(remainingLoads))
+      expect(remainingLoads).toEqual(expect.arrayContaining(expectedRemainingLoads))
+    })
+  })
+
+  describe('removeSupport', () => {
+    let getSupportsMock = jest.spyOn(Beam.prototype, 'supports', 'get')
+
+    beforeEach(() => {
+      getSupportsMock.mockClear()
+    })
+
+    it('gets support from the beam instance', () => {
+      beam.removeSupport(3)
+      expect(getSupportsMock).toBeCalledTimes(1)
+    })
+
+    it('does not remove a support if support id does not exist', () => {
+      const addedSupports: Support[] = [
+        {
+          id: 1,
+          x: 0,
+          rfx: true,
+          rfy: true,
+          rmz: false,
+        },
+        {
+          id: 2,
+          x: 10,
+          rfx: false,
+          rfy: true,
+          rmz: false,
+        },
+      ]
+
+      getSupportsMock.mockReturnValue(addedSupports)
+      const removedSupportThatDidntExist = beam.removeSupport(12)
+
+      expect(addedSupports).toEqual(expect.arrayContaining(removedSupportThatDidntExist))
+      expect(removedSupportThatDidntExist).toEqual(expect.arrayContaining(addedSupports))
+    })
+
+    it('removes an existing support from the beam instance', () => {
+      const addedSupports: Support[] = [
+        {
+          id: 1,
+          x: 0,
+          rfx: false,
+          rfy: true,
+          rmz: false,
+        },
+        {
+          id: 2,
+          x: 10,
+          rfx: false,
+          rfy: true,
+          rmz: false,
+        },
+        {
+          id: 3,
+          x: 15,
+          rfx: true,
+          rfy: false,
+          rmz: false,
+        },
+      ]
+
+      getSupportsMock.mockReturnValue(addedSupports)
+      const remainingSupports = beam.removeSupport(1)
+
+      const expectedRemainingSupports: Support[] = [
+        {
+          id: 1,
+          x: 10,
+          rfx: false,
+          rfy: true,
+          rmz: false,
+        },
+        {
+          id: 2,
+          x: 15,
+          rfx: true,
+          rfy: false,
+          rmz: false,
+        },
+      ]
+
+      expect(expectedRemainingSupports).toEqual(expect.arrayContaining(remainingSupports))
+      expect(remainingSupports).toEqual(expect.arrayContaining(expectedRemainingSupports))
     })
   })
 })
