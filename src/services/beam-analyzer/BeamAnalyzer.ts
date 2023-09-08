@@ -20,17 +20,21 @@ export default class BeamAnalyzer {
     this.beam = beam
   }
 
-  #calculateCoefficientMatrix(supports: Support[]) {
+  #calculateCoefficientMatrixAndVariableVector(supports: Support[]) {
     const reducedSupports = []
+    const variableVector: string[] = []
     for (const support of supports) {
       if (support.rfx) {
         reducedSupports.push({ x: support.x, eqnIdx: 0 })
+        variableVector.push(`R_Fx_${support.id}`)
       }
       if (support.rfy) {
         reducedSupports.push({ x: support.x, eqnIdx: 1 })
+        variableVector.push(`R_Fy_${support.id}`)
       }
       if (support.rmz) {
         reducedSupports.push({ x: support.x, eqnIdx: 2 })
+        variableVector.push(`R_Mz_${support.id}`)
       }
       if (reducedSupports.length > this.degreesOfFreedom) {
         throw new Error('System is statically indeterminate')
@@ -51,7 +55,7 @@ export default class BeamAnalyzer {
       }
     })
 
-    return coefficientMatrix
+    return { coefficientMatrix, variableVector }
   }
 
   #calculateColumnVector(loads: Load[]) {
@@ -76,17 +80,24 @@ export default class BeamAnalyzer {
     // if A is not square the system is statically indeterminate
 
     const { loads, supports } = this.beam
-    const coefficientMatrix = this.#calculateCoefficientMatrix(supports)
+    const { coefficientMatrix, variableVector } =
+      this.#calculateCoefficientMatrixAndVariableVector(supports)
     const columnVector = this.#calculateColumnVector(loads)
 
     try {
       return usolve(coefficientMatrix, columnVector)
         .toArray()
-        .map((element) => {
+        .map((element, idx) => {
           if (Array.isArray(element)) {
-            return element[0]
+            return {
+              name: variableVector[idx],
+              value: element[0],
+            }
           } else {
-            return element
+            return {
+              name: variableVector[idx],
+              value: element,
+            }
           }
         })
     } catch {

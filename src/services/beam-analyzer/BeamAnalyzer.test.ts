@@ -51,15 +51,28 @@ describe('BeamAnalyzer', () => {
       expect(() => beamAnalyzerWithTooFewSupports.solveReactionForces()).toThrowError()
     })
 
-    it('correctly solves for reaction forces', () => {
+    it('correctly solves for reaction force values', () => {
       getSupportsMock.mockReturnValue([{ id: 1, x: 0, rfx: true, rfy: true, rmz: true }])
       getLoadsMock.mockReturnValue([{ id: 1, x: 20, fx: 100, fy: -300, mz: 0 }])
 
       const supports = beamAnalyzer.solveReactionForces()
 
-      expect(supports[0]).toBe(-100)
-      expect(supports[1]).toBe(300)
-      expect(supports[2]).toBe(6000)
+      // order of output is dependent on #calculateCoefficientMatrixAndVariableVector
+      expect(supports[0].value).toBe(-100)
+      expect(supports[1].value).toBe(300)
+      expect(supports[2].value).toBe(6000)
+    })
+
+    it('corretly names multiple reaction forces', () => {
+      getSupportsMock.mockReturnValue([
+        { id: 1, x: 0, rfx: true, rfy: true, rmz: false },
+        { id: 2, x: 20, rfx: false, rfy: true, rmz: false },
+      ])
+      const supports = beamAnalyzer.solveReactionForces()
+
+      expect(supports[0].name).toBe('R_Fx_1')
+      expect(supports[1].name).toBe('R_Fy_1')
+      expect(supports[2].name).toBe('R_Fy_2')
     })
   })
 })
