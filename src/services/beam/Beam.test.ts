@@ -227,7 +227,39 @@ describe('Beam', () => {
       expect(supports[2].name).toBe('R_Fy_2')
     })
 
-    it.todo('populates a direction for the added support')
+    it('populates a direction for the added support', () => {
+      const cantilever: NewSupport = {
+        x: 0,
+        rfx: true,
+        rfy: true,
+        rmz: true,
+      }
+      const cantileverSupport = beam.addSupport(cantilever)
+
+      expect(cantileverSupport[0].direction).toBe(SupportDirection.Fx)
+      expect(cantileverSupport[1].direction).toBe(SupportDirection.Fy)
+      expect(cantileverSupport[2].direction).toBe(SupportDirection.Mz)
+
+      const simplySupportedBeam = new Beam(20)
+      const support1: NewSupport = {
+        x: 0,
+        rfx: true,
+        rfy: true,
+        rmz: false,
+      }
+      const support2: NewSupport = {
+        x: 20,
+        rfx: false,
+        rfy: true,
+        rmz: false,
+      }
+      simplySupportedBeam.addSupport(support1)
+      const supports = simplySupportedBeam.addSupport(support2)
+
+      expect(supports[0].direction).toBe(SupportDirection.Fx)
+      expect(supports[1].direction).toBe(SupportDirection.Fy)
+      expect(supports[2].direction).toBe(SupportDirection.Fy)
+    })
   })
 
   describe('removeLoad', () => {
