@@ -122,13 +122,10 @@ describe('Beam', () => {
         rfy: true,
         rmz: false,
       }
-      beam.addSupport(validSupport1)
-      expect(beam.supports.length).toBe(1)
-      beam.addSupport(validSupport2)
-      expect(beam.supports.length).toBe(2)
-      const addedSupport = beam.supports[1]
-      expect(addedSupport.hasOwnProperty('id')).toBeTruthy()
-      expect(addedSupport.id).toBeTruthy()
+      const oneSupport = beam.addSupport(validSupport1)
+      expect(oneSupport.length).toBe(2)
+      const allSupports = beam.addSupport(validSupport2)
+      expect(allSupports.length).toBe(3)
     })
 
     it('does not allow repeat supports', () => {
@@ -192,10 +189,45 @@ describe('Beam', () => {
 
       expect(oneSupport[0].id).toBe(1)
       expect(twoSupports[0].id).toBe(1)
-      expect(twoSupports[1].id).toBe(2)
+      expect(twoSupports[1].id).toBe(1)
+      expect(twoSupports[2].id).toBe(2)
     })
 
-    it.todo('generates a valid name for each support')
+    it('generates a valid name for each support', () => {
+      const cantilever: NewSupport = {
+        x: 0,
+        rfx: true,
+        rfy: true,
+        rmz: true,
+      }
+      const cantileverSupport = beam.addSupport(cantilever)
+
+      expect(cantileverSupport[0].name).toBe('R_Fx_1')
+      expect(cantileverSupport[1].name).toBe('R_Fy_1')
+      expect(cantileverSupport[2].name).toBe('R_Mz_1')
+
+      const simplySupportedBeam = new Beam(20)
+      const support1: NewSupport = {
+        x: 0,
+        rfx: true,
+        rfy: true,
+        rmz: false,
+      }
+      const support2: NewSupport = {
+        x: 20,
+        rfx: false,
+        rfy: true,
+        rmz: false,
+      }
+      simplySupportedBeam.addSupport(support1)
+      const supports = simplySupportedBeam.addSupport(support2)
+
+      expect(supports[0].name).toBe('R_Fx_1')
+      expect(supports[1].name).toBe('R_Fy_1')
+      expect(supports[2].name).toBe('R_Fy_2')
+    })
+
+    it.todo('populates a direction for the added support')
   })
 
   describe('removeLoad', () => {
@@ -291,8 +323,14 @@ describe('Beam', () => {
       getSupportsMock.mockClear()
     })
 
-    it('gets support from the beam instance', () => {
+    it('gets support from the beam instance for invalid load removal', () => {
       beam.removeSupport(3)
+      expect(getSupportsMock).toBeCalledTimes(1)
+    })
+
+    it('gets support from the beam instance for valid load removal', () => {
+      beam.addSupport({ x: 0, rfx: true, rfy: true, rmz: true })
+      beam.removeSupport(1)
       expect(getSupportsMock).toBeCalledTimes(1)
     })
 

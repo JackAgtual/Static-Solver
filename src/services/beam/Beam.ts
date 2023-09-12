@@ -31,6 +31,7 @@ export default class Beam {
   length: number
   #loads: Load[]
   #supports: Support[]
+  #supportCnt = 1
 
   constructor(length: number) {
     this.length = length
@@ -78,7 +79,7 @@ export default class Beam {
       throw new Error('Support already exists at location')
     }
 
-    const id = this.#supports.length + 1
+    const id = this.#supportCnt
 
     if (support.rfx) {
       this.#supports.push({
@@ -105,6 +106,7 @@ export default class Beam {
       })
     }
 
+    this.#supportCnt++
     return this.#supports
   }
 
@@ -120,12 +122,32 @@ export default class Beam {
   }
 
   removeSupport(id: number): Support[] {
-    return this.supports
+    const supports = this.supports
+    if (!supports.some((support) => support.id === id)) return supports
+
+    return supports
       .filter((support) => support.id !== id)
       .map((support, idx) => {
+        const id = idx + 1
+
+        let name
+        switch (support.direction) {
+          case SupportDirection.Fx:
+            name = `R_Fx_${id}`
+            break
+          case SupportDirection.Fy:
+            name = `R_Fy_${id}`
+            break
+          case SupportDirection.Mz:
+            name = `R_Mz_${id}`
+            break
+        }
+
+        this.#supportCnt--
         return {
           ...support,
-          id: idx + 1,
+          id,
+          name,
         }
       })
   }
