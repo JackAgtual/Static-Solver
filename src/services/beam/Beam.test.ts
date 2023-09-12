@@ -1,4 +1,4 @@
-import Beam, { NewLoad, NewSupport, Load, Support } from './Beam'
+import Beam, { NewLoad, NewSupport, Load, Support, SupportDirection } from './Beam'
 
 describe('Beam', () => {
   const beamLength = 20
@@ -194,6 +194,8 @@ describe('Beam', () => {
       expect(twoSupports[0].id).toBe(1)
       expect(twoSupports[1].id).toBe(2)
     })
+
+    it.todo('generates a valid name for each support')
   })
 
   describe('removeLoad', () => {
@@ -299,16 +301,20 @@ describe('Beam', () => {
         {
           id: 1,
           x: 0,
-          rfx: true,
-          rfy: true,
-          rmz: false,
+          direction: SupportDirection.Fx,
+          name: 'R_Fx_1',
+        },
+        {
+          id: 1,
+          x: 0,
+          direction: SupportDirection.Fy,
+          name: 'R_Fy_1',
         },
         {
           id: 2,
           x: 10,
-          rfx: false,
-          rfy: true,
-          rmz: false,
+          direction: SupportDirection.Fy,
+          name: 'R_Fy_2',
         },
       ]
 
@@ -324,23 +330,20 @@ describe('Beam', () => {
         {
           id: 1,
           x: 0,
-          rfx: false,
-          rfy: true,
-          rmz: false,
+          direction: SupportDirection.Fy,
+          name: 'R_Fy_1',
         },
         {
           id: 2,
           x: 10,
-          rfx: false,
-          rfy: true,
-          rmz: false,
+          direction: SupportDirection.Fy,
+          name: 'R_Fy_2',
         },
         {
           id: 3,
           x: 15,
-          rfx: true,
-          rfy: false,
-          rmz: false,
+          direction: SupportDirection.Fx,
+          name: 'R_Fx_3',
         },
       ]
 
@@ -351,16 +354,14 @@ describe('Beam', () => {
         {
           id: 1,
           x: 10,
-          rfx: false,
-          rfy: true,
-          rmz: false,
+          direction: SupportDirection.Fy,
+          name: 'R_Fy_1',
         },
         {
           id: 2,
           x: 15,
-          rfx: true,
-          rfy: false,
-          rmz: false,
+          direction: SupportDirection.Fx,
+          name: 'R_Fx_2',
         },
       ]
 

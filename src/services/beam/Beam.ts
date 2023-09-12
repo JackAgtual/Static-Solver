@@ -14,7 +14,18 @@ export type NewSupport = {
   rmz: boolean
 }
 
-export type Support = NewSupport & { id: number }
+export enum SupportDirection {
+  Fx,
+  Fy,
+  Mz,
+}
+
+export type Support = {
+  x: number
+  direction: SupportDirection
+  id: number
+  name: string
+}
 
 export default class Beam {
   length: number
@@ -69,7 +80,31 @@ export default class Beam {
 
     const id = this.#supports.length + 1
 
-    this.#supports.push({ id, ...support })
+    if (support.rfx) {
+      this.#supports.push({
+        id,
+        x: support.x,
+        name: `R_Fx_${id}`,
+        direction: SupportDirection.Fx,
+      })
+    }
+    if (support.rfy) {
+      this.#supports.push({
+        id,
+        x: support.x,
+        name: `R_Fy_${id}`,
+        direction: SupportDirection.Fy,
+      })
+    }
+    if (support.rmz) {
+      this.#supports.push({
+        id,
+        name: `R_Mz_${id}`,
+        x: support.x,
+        direction: SupportDirection.Mz,
+      })
+    }
+
     return this.#supports
   }
 
