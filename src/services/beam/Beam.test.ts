@@ -3,11 +3,12 @@ import Beam, { NewLoad, NewSupport, Load, Support, SupportDirection } from './Be
 describe('Beam', () => {
   const beamLength = 20
   let beam: Beam
-  beforeEach(() => {
-    beam = new Beam(beamLength)
-  })
 
   describe('addLoad', () => {
+    beforeEach(() => {
+      beam = new Beam(beamLength)
+    })
+
     it('does not allow loads to be applied off of the beam', () => {
       const overBoundsLoad: NewLoad = {
         x: 30,
@@ -91,6 +92,10 @@ describe('Beam', () => {
   })
 
   describe('addSupport', () => {
+    beforeEach(() => {
+      beam = new Beam(beamLength)
+    })
+
     it('does not add supports out of bounds', () => {
       const negativeXSupport: NewSupport = {
         x: -1,
@@ -263,10 +268,16 @@ describe('Beam', () => {
   })
 
   describe('removeLoad', () => {
-    let getLoadsMock = jest.spyOn(Beam.prototype, 'loads', 'get')
+    let getLoadsMock: jest.SpyInstance<Load[], [], any>
 
     beforeEach(() => {
+      getLoadsMock = jest.spyOn(Beam.prototype, 'loads', 'get')
+      beam = new Beam(beamLength)
       getLoadsMock.mockClear()
+    })
+
+    afterAll(() => {
+      getLoadsMock.mockRestore()
     })
 
     it('gets loads from the beam instance', () => {
@@ -349,10 +360,19 @@ describe('Beam', () => {
   })
 
   describe('removeSupport', () => {
-    let getSupportsMock = jest.spyOn(Beam.prototype, 'supports', 'get')
+    let getSupportsMock: jest.SpyInstance
 
     beforeEach(() => {
+      getSupportsMock = jest.spyOn(Beam.prototype, 'supports', 'get')
+      beam = new Beam(beamLength)
+    })
+
+    afterEach(() => {
       getSupportsMock.mockClear()
+    })
+
+    afterAll(() => {
+      getSupportsMock.mockRestore()
     })
 
     it('gets support from the beam instance for invalid load removal', () => {
@@ -437,6 +457,33 @@ describe('Beam', () => {
 
       expect(expectedRemainingSupports).toEqual(expect.arrayContaining(remainingSupports))
       expect(remainingSupports).toEqual(expect.arrayContaining(expectedRemainingSupports))
+    })
+  })
+
+  describe('updating #supportCnt', () => {
+    beforeEach(() => {
+      beam = new Beam(beamLength)
+    })
+
+    it('maintains #supportCnt after adding and removing loads', () => {
+      const support1: NewSupport = { x: 0, rfx: true, rfy: true, rmz: false }
+      const support2: NewSupport = { x: 19, rfx: false, rfy: true, rmz: false }
+      const fixedSupport2: NewSupport = { x: 20, rfx: false, rfy: true, rmz: false }
+
+      beam.addSupport(support1)
+      beam.addSupport(support2)
+      beam.removeSupport(2)
+
+      const finalSupports = beam.addSupport(fixedSupport2)
+
+      const expectedFinalSupports: Support[] = [
+        { x: 0, direction: SupportDirection.Fx, id: 1, name: 'R_Fx_1' },
+        { x: 0, direction: SupportDirection.Fy, id: 1, name: 'R_Fy_1' },
+        { x: 20, direction: SupportDirection.Fy, id: 2, name: 'R_Fy_2' },
+      ]
+
+      expect(expectedFinalSupports).toEqual(expect.arrayContaining(finalSupports))
+      expect(finalSupports).toEqual(expect.arrayContaining(expectedFinalSupports))
     })
   })
 })

@@ -123,12 +123,18 @@ export default class Beam {
 
   removeSupport(id: number): Support[] {
     const supports = this.supports
-    if (!supports.some((support) => support.id === id)) return supports
+    const removedIdx = supports.findIndex((support) => support.id === id)
 
-    return supports
+    if (removedIdx < 0) return supports
+
+    const updatedSupports = supports
       .filter((support) => support.id !== id)
       .map((support, idx) => {
-        const id = idx + 1
+        let id = support.id
+
+        if (idx >= removedIdx) {
+          id--
+        }
 
         let name
         switch (support.direction) {
@@ -143,12 +149,15 @@ export default class Beam {
             break
         }
 
-        this.#supportCnt--
         return {
           ...support,
           id,
           name,
         }
       })
+
+    this.#supportCnt--
+    this.#supports = updatedSupports
+    return updatedSupports
   }
 }
