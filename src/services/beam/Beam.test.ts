@@ -1,13 +1,14 @@
-import Beam, { NewLoad, NewSupport, Load, Support } from './Beam'
+import Beam, { NewLoad, NewSupport, Load, Support, SupportDirection } from './Beam'
 
 describe('Beam', () => {
   const beamLength = 20
   let beam: Beam
-  beforeEach(() => {
-    beam = new Beam(beamLength)
-  })
 
   describe('addLoad', () => {
+    beforeEach(() => {
+      beam = new Beam(beamLength)
+    })
+
     it('does not allow loads to be applied off of the beam', () => {
       const overBoundsLoad: NewLoad = {
         x: 30,
@@ -91,6 +92,10 @@ describe('Beam', () => {
   })
 
   describe('addSupport', () => {
+    beforeEach(() => {
+      beam = new Beam(beamLength)
+    })
+
     it('does not add supports out of bounds', () => {
       const negativeXSupport: NewSupport = {
         x: -1,
@@ -122,13 +127,10 @@ describe('Beam', () => {
         rfy: true,
         rmz: false,
       }
-      beam.addSupport(validSupport1)
-      expect(beam.supports.length).toBe(1)
-      beam.addSupport(validSupport2)
-      expect(beam.supports.length).toBe(2)
-      const addedSupport = beam.supports[1]
-      expect(addedSupport.hasOwnProperty('id')).toBeTruthy()
-      expect(addedSupport.id).toBeTruthy()
+      const oneSupport = beam.addSupport(validSupport1)
+      expect(oneSupport.length).toBe(2)
+      const allSupports = beam.addSupport(validSupport2)
+      expect(allSupports.length).toBe(3)
     })
 
     it('does not allow repeat supports', () => {
@@ -192,15 +194,90 @@ describe('Beam', () => {
 
       expect(oneSupport[0].id).toBe(1)
       expect(twoSupports[0].id).toBe(1)
-      expect(twoSupports[1].id).toBe(2)
+      expect(twoSupports[1].id).toBe(1)
+      expect(twoSupports[2].id).toBe(2)
+    })
+
+    it('generates a valid name for each support', () => {
+      const cantilever: NewSupport = {
+        x: 0,
+        rfx: true,
+        rfy: true,
+        rmz: true,
+      }
+      const cantileverSupport = beam.addSupport(cantilever)
+
+      expect(cantileverSupport[0].name).toBe('R_Fx_1')
+      expect(cantileverSupport[1].name).toBe('R_Fy_1')
+      expect(cantileverSupport[2].name).toBe('R_Mz_1')
+
+      const simplySupportedBeam = new Beam(20)
+      const support1: NewSupport = {
+        x: 0,
+        rfx: true,
+        rfy: true,
+        rmz: false,
+      }
+      const support2: NewSupport = {
+        x: 20,
+        rfx: false,
+        rfy: true,
+        rmz: false,
+      }
+      simplySupportedBeam.addSupport(support1)
+      const supports = simplySupportedBeam.addSupport(support2)
+
+      expect(supports[0].name).toBe('R_Fx_1')
+      expect(supports[1].name).toBe('R_Fy_1')
+      expect(supports[2].name).toBe('R_Fy_2')
+    })
+
+    it('populates a direction for the added support', () => {
+      const cantilever: NewSupport = {
+        x: 0,
+        rfx: true,
+        rfy: true,
+        rmz: true,
+      }
+      const cantileverSupport = beam.addSupport(cantilever)
+
+      expect(cantileverSupport[0].direction).toBe(SupportDirection.Fx)
+      expect(cantileverSupport[1].direction).toBe(SupportDirection.Fy)
+      expect(cantileverSupport[2].direction).toBe(SupportDirection.Mz)
+
+      const simplySupportedBeam = new Beam(20)
+      const support1: NewSupport = {
+        x: 0,
+        rfx: true,
+        rfy: true,
+        rmz: false,
+      }
+      const support2: NewSupport = {
+        x: 20,
+        rfx: false,
+        rfy: true,
+        rmz: false,
+      }
+      simplySupportedBeam.addSupport(support1)
+      const supports = simplySupportedBeam.addSupport(support2)
+
+      expect(supports[0].direction).toBe(SupportDirection.Fx)
+      expect(supports[1].direction).toBe(SupportDirection.Fy)
+      expect(supports[2].direction).toBe(SupportDirection.Fy)
     })
   })
 
   describe('removeLoad', () => {
-    let getLoadsMock = jest.spyOn(Beam.prototype, 'loads', 'get')
+    let getLoadsMock: jest.SpyInstance<Load[], [], any>
 
     beforeEach(() => {
+      getLoadsMock = jest.spyOn(Beam.prototype, 'loads', 'get')
+      beam = new Beam(beamLength)
       getLoadsMock.mockClear()
+    })
+
+    afterAll(() => {
+      getLoadsMock.mockRestore()
     })
 
     it('gets loads from the beam instance', () => {
@@ -283,14 +360,29 @@ describe('Beam', () => {
   })
 
   describe('removeSupport', () => {
-    let getSupportsMock = jest.spyOn(Beam.prototype, 'supports', 'get')
+    let getSupportsMock: jest.SpyInstance
 
     beforeEach(() => {
+      getSupportsMock = jest.spyOn(Beam.prototype, 'supports', 'get')
+      beam = new Beam(beamLength)
+    })
+
+    afterEach(() => {
       getSupportsMock.mockClear()
     })
 
-    it('gets support from the beam instance', () => {
+    afterAll(() => {
+      getSupportsMock.mockRestore()
+    })
+
+    it('gets support from the beam instance for invalid load removal', () => {
       beam.removeSupport(3)
+      expect(getSupportsMock).toBeCalledTimes(1)
+    })
+
+    it('gets support from the beam instance for valid load removal', () => {
+      beam.addSupport({ x: 0, rfx: true, rfy: true, rmz: true })
+      beam.removeSupport(1)
       expect(getSupportsMock).toBeCalledTimes(1)
     })
 
@@ -299,16 +391,20 @@ describe('Beam', () => {
         {
           id: 1,
           x: 0,
-          rfx: true,
-          rfy: true,
-          rmz: false,
+          direction: SupportDirection.Fx,
+          name: 'R_Fx_1',
+        },
+        {
+          id: 1,
+          x: 0,
+          direction: SupportDirection.Fy,
+          name: 'R_Fy_1',
         },
         {
           id: 2,
           x: 10,
-          rfx: false,
-          rfy: true,
-          rmz: false,
+          direction: SupportDirection.Fy,
+          name: 'R_Fy_2',
         },
       ]
 
@@ -324,23 +420,20 @@ describe('Beam', () => {
         {
           id: 1,
           x: 0,
-          rfx: false,
-          rfy: true,
-          rmz: false,
+          direction: SupportDirection.Fy,
+          name: 'R_Fy_1',
         },
         {
           id: 2,
           x: 10,
-          rfx: false,
-          rfy: true,
-          rmz: false,
+          direction: SupportDirection.Fy,
+          name: 'R_Fy_2',
         },
         {
           id: 3,
           x: 15,
-          rfx: true,
-          rfy: false,
-          rmz: false,
+          direction: SupportDirection.Fx,
+          name: 'R_Fx_3',
         },
       ]
 
@@ -351,21 +444,46 @@ describe('Beam', () => {
         {
           id: 1,
           x: 10,
-          rfx: false,
-          rfy: true,
-          rmz: false,
+          direction: SupportDirection.Fy,
+          name: 'R_Fy_1',
         },
         {
           id: 2,
           x: 15,
-          rfx: true,
-          rfy: false,
-          rmz: false,
+          direction: SupportDirection.Fx,
+          name: 'R_Fx_2',
         },
       ]
 
       expect(expectedRemainingSupports).toEqual(expect.arrayContaining(remainingSupports))
       expect(remainingSupports).toEqual(expect.arrayContaining(expectedRemainingSupports))
+    })
+  })
+
+  describe('updating #supportCnt', () => {
+    beforeEach(() => {
+      beam = new Beam(beamLength)
+    })
+
+    it('maintains #supportCnt after adding and removing loads', () => {
+      const support1: NewSupport = { x: 0, rfx: true, rfy: true, rmz: false }
+      const support2: NewSupport = { x: 19, rfx: false, rfy: true, rmz: false }
+      const fixedSupport2: NewSupport = { x: 20, rfx: false, rfy: true, rmz: false }
+
+      beam.addSupport(support1)
+      beam.addSupport(support2)
+      beam.removeSupport(2)
+
+      const finalSupports = beam.addSupport(fixedSupport2)
+
+      const expectedFinalSupports: Support[] = [
+        { x: 0, direction: SupportDirection.Fx, id: 1, name: 'R_Fx_1' },
+        { x: 0, direction: SupportDirection.Fy, id: 1, name: 'R_Fy_1' },
+        { x: 20, direction: SupportDirection.Fy, id: 2, name: 'R_Fy_2' },
+      ]
+
+      expect(expectedFinalSupports).toEqual(expect.arrayContaining(finalSupports))
+      expect(finalSupports).toEqual(expect.arrayContaining(expectedFinalSupports))
     })
   })
 })
