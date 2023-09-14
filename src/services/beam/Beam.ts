@@ -1,9 +1,37 @@
-import { Load, NewLoad, Support, NewSupport } from '../../types/staticAnalysis'
+export type NewLoad = {
+  x: number
+  fx: number
+  fy: number
+  mz: number
+}
+
+export type Load = NewLoad & { id: number }
+
+export type NewSupport = {
+  x: number
+  rfx: boolean
+  rfy: boolean
+  rmz: boolean
+}
+
+export enum SupportDirection {
+  Fx,
+  Fy,
+  Mz,
+}
+
+export type Support = {
+  x: number
+  direction: SupportDirection
+  id: number
+  name: string
+}
 
 export default class Beam {
   length: number
   #loads: Load[]
   #supports: Support[]
+  #supportCnt = 1
 
   constructor(length: number) {
     this.length = length
@@ -51,9 +79,34 @@ export default class Beam {
       throw new Error('Support already exists at location')
     }
 
-    const id = this.#supports.length + 1
+    const id = this.#supportCnt
 
-    this.#supports.push({ id, ...support })
+    if (support.rfx) {
+      this.#supports.push({
+        id,
+        x: support.x,
+        name: `R_Fx_${id}`,
+        direction: SupportDirection.Fx,
+      })
+    }
+    if (support.rfy) {
+      this.#supports.push({
+        id,
+        x: support.x,
+        name: `R_Fy_${id}`,
+        direction: SupportDirection.Fy,
+      })
+    }
+    if (support.rmz) {
+      this.#supports.push({
+        id,
+        name: `R_Mz_${id}`,
+        x: support.x,
+        direction: SupportDirection.Mz,
+      })
+    }
+
+    this.#supportCnt++
     return this.#supports
   }
 
@@ -69,13 +122,42 @@ export default class Beam {
   }
 
   removeSupport(id: number): Support[] {
-    return this.supports
+    const supports = this.supports
+    const removedIdx = supports.findIndex((support) => support.id === id)
+
+    if (removedIdx < 0) return supports
+
+    const updatedSupports = supports
       .filter((support) => support.id !== id)
       .map((support, idx) => {
+        let id = support.id
+
+        if (idx >= removedIdx) {
+          id--
+        }
+
+        let name
+        switch (support.direction) {
+          case SupportDirection.Fx:
+            name = `R_Fx_${id}`
+            break
+          case SupportDirection.Fy:
+            name = `R_Fy_${id}`
+            break
+          case SupportDirection.Mz:
+            name = `R_Mz_${id}`
+            break
+        }
+
         return {
           ...support,
-          id: idx + 1,
+          id,
+          name,
         }
       })
+
+    this.#supportCnt--
+    this.#supports = updatedSupports
+    return updatedSupports
   }
 }
