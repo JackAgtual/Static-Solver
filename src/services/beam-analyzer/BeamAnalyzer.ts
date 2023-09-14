@@ -1,5 +1,5 @@
 import Beam from '../beam/Beam'
-import { Load, Support } from '../../types/staticAnalysis'
+import { Load, Support, SupportDirection } from '../../types/staticAnalysis'
 import { zeros, matrix, usolve } from 'mathjs'
 
 export type CoefficientMatrix = number[][]
@@ -20,31 +20,25 @@ export default class BeamAnalyzer {
     this.beam = beam
   }
 
-  #calculateCoefficientMatrixAndVariableVector(supports: Support[]) {
-    const reducedSupports = []
-    const variableVector: string[] = []
-    for (const support of supports) {
-      if (support.rfx) {
-        reducedSupports.push({ x: support.x, eqnIdx: 0 })
-        variableVector.push(`R_Fx_${support.id}`)
-      }
-      if (support.rfy) {
-        reducedSupports.push({ x: support.x, eqnIdx: 1 })
-        variableVector.push(`R_Fy_${support.id}`)
-      }
-      if (support.rmz) {
-        reducedSupports.push({ x: support.x, eqnIdx: 2 })
-        variableVector.push(`R_Mz_${support.id}`)
-      }
-      if (reducedSupports.length > this.degreesOfFreedom) {
-        throw new Error('System is statically indeterminate')
-      }
-    }
-
+  #calculateCoefficientMatrix(supports: Support[]) {
     const coefficientMatrix = matrix(zeros(this.degreesOfFreedom, this.degreesOfFreedom))
 
-    reducedSupports.forEach((support, supportIdx) => {
-      const { x, eqnIdx } = support
+    supports.forEach((support, supportIdx) => {
+      const { x } = support
+      let eqnIdx
+      switch (support.direction) {
+        case SupportDirection.Fx:
+          eqnIdx = 0
+          break
+        case SupportDirection.Fy:
+          eqnIdx = 1
+          break
+        case SupportDirection.Mz:
+          eqnIdx = 2
+          break
+        default:
+          throw new Error('Invalid SupportDirection')
+      }
 
       const curVal = coefficientMatrix.get([eqnIdx, supportIdx])
       coefficientMatrix.set([eqnIdx, supportIdx], curVal + 1)
@@ -55,7 +49,7 @@ export default class BeamAnalyzer {
       }
     })
 
-    return { coefficientMatrix, variableVector }
+    return coefficientMatrix
   }
 
   #calculateColumnVector(loads: Load[]) {
@@ -80,24 +74,17 @@ export default class BeamAnalyzer {
     // if A is not square the system is statically indeterminate
 
     const { loads, supports } = this.beam
-    const { coefficientMatrix, variableVector } =
-      this.#calculateCoefficientMatrixAndVariableVector(supports)
+    const coefficientMatrix = this.#calculateCoefficientMatrix(supports)
     const columnVector = this.#calculateColumnVector(loads)
 
     try {
       return usolve(coefficientMatrix, columnVector)
         .toArray()
-        .map((element, idx) => {
+        .map((element) => {
           if (Array.isArray(element)) {
-            return {
-              name: variableVector[idx],
-              value: element[0],
-            }
+            return element[0]
           } else {
-            return {
-              name: variableVector[idx],
-              value: element,
-            }
+            return element
           }
         })
     } catch {
