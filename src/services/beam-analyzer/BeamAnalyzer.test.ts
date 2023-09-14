@@ -66,12 +66,21 @@ describe('BeamAnalyzer', () => {
         { id: 1, x: 0, direction: SupportDirection.Mz, name: 'R_Mz_1' },
       ])
       getLoadsMock.mockReturnValue([{ id: 1, x: 20, fx: 100, fy: -300, mz: 0 }])
+      const solvedCantileverSupports = beamAnalyzer.solveReactionForces()
+      expect(solvedCantileverSupports[0]).toBe(-100)
+      expect(solvedCantileverSupports[1]).toBe(300)
+      expect(solvedCantileverSupports[2]).toBe(6000)
 
-      const solvedSupports = beamAnalyzer.solveReactionForces()
-
-      expect(solvedSupports[0]).toBe(-100)
-      expect(solvedSupports[1]).toBe(300)
-      expect(solvedSupports[2]).toBe(6000)
+      getSupportsMock.mockReturnValue([
+        { id: 1, x: 0, direction: SupportDirection.Fx, name: 'R_Fx_1' },
+        { id: 1, x: 0, direction: SupportDirection.Fy, name: 'R_Fy_1' },
+        { id: 2, x: 20, direction: SupportDirection.Fy, name: 'R_Fy_2' },
+      ])
+      getLoadsMock.mockReturnValue([{ id: 1, x: 15, fx: 0, fy: -600, mz: 0 }])
+      const solvedSimpleSupports = beamAnalyzer.solveReactionForces()
+      expect(solvedSimpleSupports[0]).toBe(0)
+      expect(solvedSimpleSupports[1]).toBe(150)
+      expect(solvedSimpleSupports[2]).toBe(450)
     })
 
     it('returns values based on the order of supports', () => {
