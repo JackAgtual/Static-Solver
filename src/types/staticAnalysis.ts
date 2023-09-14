@@ -14,4 +14,15 @@ export type NewSupport = {
 
 export type Load = NewLoad & { id: number }
 
-export type Support = NewSupport & { id: number }
+export enum SupportDirection {
+  Fx,
+  Fy,
+  Mz,
+}
+
+export type Support = {
+  x: number
+  direction: SupportDirection
+  id: number
+  name: string
+}
