@@ -1,6 +1,6 @@
 import Beam from '../beam/Beam'
 import { Load, Support, SupportDirection } from '../../types/staticAnalysis'
-import { zeros, matrix, usolve } from 'mathjs'
+import { zeros, matrix, lusolve } from 'mathjs'
 
 export type CoefficientMatrix = number[][]
 export type ColumnVector = number[]
@@ -78,7 +78,7 @@ export default class BeamAnalyzer {
     const columnVector = this.#calculateColumnVector(loads)
 
     try {
-      return usolve(coefficientMatrix, columnVector)
+      return lusolve(coefficientMatrix, columnVector)
         .toArray()
         .map((element) => {
           if (Array.isArray(element)) {
