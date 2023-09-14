@@ -1,4 +1,11 @@
-import Beam, { NewLoad, NewSupport, Load, Support, SupportDirection } from './Beam'
+import Beam from './Beam'
+import {
+  NewLoad,
+  NewSupport,
+  Load,
+  Support,
+  SupportDirection,
+} from '../../types/staticAnalysis'
 
 describe('Beam', () => {
   const beamLength = 20
