@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Beam } from '../../types/staticAnalysis'
 import LengthForm from './LengthForm'
 import SupportsForm from './SupportsForm'
+import LoadsForm from './LoadsForm'
 
 function BeamForm() {
   const [beam, setBeam] = useState<Beam>({
@@ -20,7 +21,10 @@ function BeamForm() {
       {beam.length === null ? (
         <LengthForm beam={beam} setBeam={setBeam} />
       ) : (
-        <SupportsForm beam={beam} setBeam={setBeam} />
+        <>
+          <SupportsForm beam={beam} setBeam={setBeam} />
+          <LoadsForm beam={beam} setBeam={setBeam} />
+        </>
       )}
     </>
   )
