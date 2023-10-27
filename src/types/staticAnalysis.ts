@@ -26,3 +26,9 @@ export type Support = {
   id: number
   name: string
 }
+
+export type Beam = {
+  length: number | null
+  supports: Support[]
+  loads: Load[]
+}
