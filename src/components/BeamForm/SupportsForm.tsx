@@ -25,18 +25,18 @@ function SupportsForm({ beam, setBeam }: SupportFormProps) {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    console.log('submitting')
+
     const form = e.currentTarget
     const formData = new FormData(form)
     const x = Number(formData.get('location'))
     const rx = !!formData.get('rx')
     const ry = !!formData.get('ry')
     const mz = !!formData.get('mz')
+    const noSupportSelected = !rx && !ry && !mz
 
     if (supportExistsAtLocation(x)) {
       locationRef.current?.setCustomValidity('Support already exists at location')
     }
-    const noSupportSelected = !rx && !ry && !mz
     if (noSupportSelected) {
       directionRef.current?.setCustomValidity('Must select at least one support')
     }
@@ -62,6 +62,7 @@ function SupportsForm({ beam, setBeam }: SupportFormProps) {
 
     setBeam({ ...beam, supports: [...beam.supports, ...supports] })
     setSupportCnt(supportCnt + 1)
+    form.reset()
   }
 
   return (
