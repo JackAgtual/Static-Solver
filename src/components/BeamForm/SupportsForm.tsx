@@ -41,10 +41,9 @@ function SupportsForm({ beam, setBeam }: SupportFormProps) {
       directionRef.current?.setCustomValidity('Must select at least one support')
     }
 
-    locationRef.current?.reportValidity()
-    directionRef.current?.reportValidity()
-
     if (!locationRef.current?.checkValidity() || !directionRef.current?.checkValidity()) {
+      locationRef.current?.reportValidity()
+      directionRef.current?.reportValidity()
       return
     }
 
