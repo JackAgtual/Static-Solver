@@ -1,4 +1,3 @@
-import Beam from '../beam/Beam'
 import { Load, Support, SupportDirection } from '../../types/staticAnalysis'
 import { zeros, matrix, lusolve } from 'mathjs'
 
@@ -10,20 +9,27 @@ export type ReducedSupports = {
   eqnIdx: number
 }[]
 
+type BeamAnalyzerConstructor = {
+  supports: Support[]
+  loads: Load[]
+}
+
 export default class BeamAnalyzer {
-  beam: Beam
+  supports: Support[]
+  loads: Load[]
   degreesOfFreedom = 3
   #eqnIdxThatGeneratesMoment = 1
   #momentEqnIdx = 2
 
-  constructor(beam: Beam) {
-    this.beam = beam
+  constructor({ supports, loads }: BeamAnalyzerConstructor) {
+    this.supports = supports
+    this.loads = loads
   }
 
-  #calculateCoefficientMatrix(supports: Support[]) {
+  #calculateCoefficientMatrix() {
     const coefficientMatrix = matrix(zeros(this.degreesOfFreedom, this.degreesOfFreedom))
 
-    supports.forEach((support, supportIdx) => {
+    this.supports.forEach((support, supportIdx) => {
       const { x } = support
       let eqnIdx
       switch (support.direction) {
@@ -52,10 +58,10 @@ export default class BeamAnalyzer {
     return coefficientMatrix
   }
 
-  #calculateColumnVector(loads: Load[]) {
+  #calculateColumnVector() {
     const columnVector = matrix(zeros(this.degreesOfFreedom, 1))
 
-    for (const load of loads) {
+    for (const load of this.loads) {
       const cur0 = columnVector.get([0, 0])
       const cur1 = columnVector.get([1, 0])
       const cur2 = columnVector.get([2, 0])
@@ -73,9 +79,8 @@ export default class BeamAnalyzer {
     // each row in a is a static equilibrium equation
     // if A is not square the system is statically indeterminate
 
-    const { loads, supports } = this.beam
-    const coefficientMatrix = this.#calculateCoefficientMatrix(supports)
-    const columnVector = this.#calculateColumnVector(loads)
+    const coefficientMatrix = this.#calculateCoefficientMatrix()
+    const columnVector = this.#calculateColumnVector()
 
     try {
       return lusolve(coefficientMatrix, columnVector)
