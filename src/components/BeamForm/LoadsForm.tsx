@@ -23,7 +23,7 @@ function LoadsForm({ beam, setBeam }: LoadFormProps) {
 
     const x = Number(formData.get('location'))
     const fx = Number(formData.get('fx')) ?? 0
-    const fy = Number(formData.get('ft')) ?? 0
+    const fy = Number(formData.get('fy')) ?? 0
     const mz = Number(formData.get('mz')) ?? 0
 
     const noLoadsInputted = fx === 0 && fy === 0 && mz === 0
