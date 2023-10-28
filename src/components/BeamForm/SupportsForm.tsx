@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { Beam, Support, SupportDirection } from '../../types/staticAnalysis'
+import { clearValidation } from '../../utils/form'
 
 type SupportFormProps = {
   beam: Beam
@@ -10,14 +11,6 @@ function SupportsForm({ beam, setBeam }: SupportFormProps) {
   const [supportCnt, setSupportCnt] = useState(0)
   const directionRef = useRef<HTMLInputElement | null>(null)
   const locationRef = useRef<HTMLInputElement | null>(null)
-
-  function handleLocationChange() {
-    locationRef.current?.setCustomValidity('')
-  }
-
-  function handleDirectionChange() {
-    directionRef.current?.setCustomValidity('')
-  }
 
   function supportExistsAtLocation(x: number) {
     return beam.supports.some((support) => support.x === x)
@@ -75,7 +68,7 @@ function SupportsForm({ beam, setBeam }: SupportFormProps) {
           name="location"
           min={0}
           max={beam.length ?? ''}
-          onChange={handleLocationChange}
+          onChange={clearValidation}
         />
       </label>
       <fieldset>
@@ -86,16 +79,16 @@ function SupportsForm({ beam, setBeam }: SupportFormProps) {
             ref={directionRef}
             type="checkbox"
             name="rx"
-            onChange={handleDirectionChange}
+            onChange={clearValidation}
           />
         </label>
         <label>
           <p>Force y</p>
-          <input type="checkbox" name="ry" onChange={handleDirectionChange} />
+          <input type="checkbox" name="ry" onChange={clearValidation} />
         </label>
         <label>
           <p>Moment z</p>
-          <input type="checkbox" name="mz" onChange={handleDirectionChange} />
+          <input type="checkbox" name="mz" onChange={clearValidation} />
         </label>
       </fieldset>
       <button type="submit">Add support</button>

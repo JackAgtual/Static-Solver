@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { Beam, Load } from '../../types/staticAnalysis'
+import { clearValidation } from '../../utils/form'
 
 type LoadFormProps = {
   beam: Beam
@@ -9,14 +10,6 @@ type LoadFormProps = {
 function LoadsForm({ beam, setBeam }: LoadFormProps) {
   const locationRef = useRef<HTMLInputElement | null>(null)
   const magnitudeRef = useRef<HTMLInputElement | null>(null)
-
-  function handleLocationChange() {
-    locationRef.current?.setCustomValidity('')
-  }
-
-  function handleMagnitudeChange() {
-    magnitudeRef.current?.setCustomValidity('')
-  }
 
   function loadExistsAtLocation(x: number) {
     return beam.loads.some((load) => load.x === x)
@@ -70,27 +63,22 @@ function LoadsForm({ beam, setBeam }: LoadFormProps) {
           name="location"
           min={0}
           max={beam.length ?? ''}
-          onChange={handleLocationChange}
+          onChange={clearValidation}
         />
       </label>
       <fieldset>
         <legend>Magnitude and direction</legend>
         <label>
           <p>Fx</p>
-          <input
-            ref={magnitudeRef}
-            type="number"
-            name="fx"
-            onChange={handleMagnitudeChange}
-          />
+          <input ref={magnitudeRef} type="number" name="fx" onChange={clearValidation} />
         </label>
         <label>
           <p>Fy</p>
-          <input type="number" name="fy" onChange={handleMagnitudeChange} />
+          <input type="number" name="fy" onChange={clearValidation} />
         </label>
         <label>
           <p>Mz</p>
-          <input type="number" name="mz" onChange={handleMagnitudeChange} />
+          <input type="number" name="mz" onChange={clearValidation} />
         </label>
       </fieldset>
       <button type="submit">Add load</button>
