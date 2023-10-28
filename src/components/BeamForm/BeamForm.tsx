@@ -1,20 +1,11 @@
-import { useState, useEffect } from 'react'
-import { Beam } from '../../types/staticAnalysis'
+import { BeamState } from '../../types/staticAnalysis'
 import LengthForm from './LengthForm'
 import SupportsForm from './SupportsForm'
 import LoadsForm from './LoadsForm'
 
-function BeamForm() {
-  const [beam, setBeam] = useState<Beam>({
-    length: null,
-    supports: [],
-    loads: [],
-  })
+type BeamFormProps = BeamState
 
-  useEffect(() => {
-    console.log(beam)
-  }, [beam])
-
+function BeamForm({ beam, setBeam }: BeamFormProps) {
   return (
     <>
       <h1>Beam information</h1>

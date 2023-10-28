@@ -32,3 +32,8 @@ export type Beam = {
   supports: Support[]
   loads: Load[]
 }
+
+export type BeamState = {
+  beam: Beam
+  setBeam: React.Dispatch<React.SetStateAction<Beam>>
+}

@@ -1,11 +1,8 @@
 import { useState, useRef } from 'react'
-import { Beam, Support, SupportDirection } from '../../types/staticAnalysis'
+import { BeamState, Support, SupportDirection } from '../../types/staticAnalysis'
 import { clearValidation } from '../../utils/form'
 
-type SupportFormProps = {
-  beam: Beam
-  setBeam: React.Dispatch<React.SetStateAction<Beam>>
-}
+type SupportFormProps = BeamState
 
 function SupportsForm({ beam, setBeam }: SupportFormProps) {
   const [supportCnt, setSupportCnt] = useState(0)

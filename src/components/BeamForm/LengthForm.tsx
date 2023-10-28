@@ -1,9 +1,6 @@
-import { Beam } from '../../types/staticAnalysis'
+import { BeamState } from '../../types/staticAnalysis'
 
-type LengthFormProps = {
-  beam: Beam
-  setBeam: React.Dispatch<React.SetStateAction<Beam>>
-}
+type LengthFormProps = BeamState
 
 function LengthForm({ beam, setBeam }: LengthFormProps) {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
