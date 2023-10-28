@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { Beam, Load } from '../../types/staticAnalysis'
 
 type LoadFormProps = {
@@ -6,6 +7,21 @@ type LoadFormProps = {
 }
 
 function LoadsForm({ beam, setBeam }: LoadFormProps) {
+  const locationRef = useRef<HTMLInputElement | null>(null)
+  const magnitudeRef = useRef<HTMLInputElement | null>(null)
+
+  function handleLocationChange() {
+    locationRef.current?.setCustomValidity('')
+  }
+
+  function handleMagnitudeChange() {
+    magnitudeRef.current?.setCustomValidity('')
+  }
+
+  function loadExistsAtLocation(x: number) {
+    return beam.loads.some((load) => load.x === x)
+  }
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
@@ -16,6 +32,20 @@ function LoadsForm({ beam, setBeam }: LoadFormProps) {
     const fx = Number(formData.get('fx')) ?? 0
     const fy = Number(formData.get('ft')) ?? 0
     const mz = Number(formData.get('mz')) ?? 0
+
+    const noLoadsInputted = fx === 0 && fy === 0 && mz === 0
+    if (noLoadsInputted) {
+      magnitudeRef.current?.setCustomValidity('Must enter at least one load')
+    }
+    if (loadExistsAtLocation(x)) {
+      locationRef.current?.setCustomValidity('Load already exists at location')
+    }
+
+    if (!magnitudeRef.current?.checkValidity() || !locationRef.current?.checkValidity()) {
+      magnitudeRef.current?.reportValidity()
+      locationRef.current?.reportValidity()
+      return
+    }
 
     const load: Load = {
       id: beam.loads.length,
@@ -33,21 +63,34 @@ function LoadsForm({ beam, setBeam }: LoadFormProps) {
     <form onSubmit={handleSubmit}>
       <label>
         <p>Location</p>
-        <input required type="number" name="location" min={0} max={beam.length ?? ''} />
+        <input
+          required
+          ref={locationRef}
+          type="number"
+          name="location"
+          min={0}
+          max={beam.length ?? ''}
+          onChange={handleLocationChange}
+        />
       </label>
       <fieldset>
         <legend>Magnitude and direction</legend>
         <label>
           <p>Fx</p>
-          <input type="number" name="fx" />
+          <input
+            ref={magnitudeRef}
+            type="number"
+            name="fx"
+            onChange={handleMagnitudeChange}
+          />
         </label>
         <label>
           <p>Fy</p>
-          <input type="number" name="fy" />
+          <input type="number" name="fy" onChange={handleMagnitudeChange} />
         </label>
         <label>
           <p>Mz</p>
-          <input type="number" name="mz" />
+          <input type="number" name="mz" onChange={handleMagnitudeChange} />
         </label>
       </fieldset>
       <button type="submit">Add load</button>
