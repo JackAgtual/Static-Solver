@@ -1,13 +1,13 @@
 import { useRef } from 'react'
-import { Beam, Load } from '../../types/staticAnalysis'
+import { Beam, NewLoad } from '../../types/staticAnalysis'
 import { clearValidation } from '../../utils/form'
 
 type LoadFormProps = {
   beam: Beam
-  setBeam: React.Dispatch<React.SetStateAction<Beam>>
+  addLoad: (load: NewLoad) => void
 }
 
-function LoadsForm({ beam, setBeam }: LoadFormProps) {
+function LoadsForm({ beam, addLoad }: LoadFormProps) {
   const locationRef = useRef<HTMLInputElement | null>(null)
   const magnitudeRef = useRef<HTMLInputElement | null>(null)
 
@@ -40,15 +40,8 @@ function LoadsForm({ beam, setBeam }: LoadFormProps) {
       return
     }
 
-    const load: Load = {
-      id: beam.loads.length,
-      x,
-      fx,
-      fy,
-      mz,
-    }
-
-    setBeam({ ...beam, loads: [...beam.loads, load] })
+    const load: NewLoad = { x, fx, fy, mz }
+    addLoad(load)
     form.reset()
   }
 

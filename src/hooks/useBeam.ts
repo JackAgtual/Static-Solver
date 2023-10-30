@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
   Beam,
+  NewLoad,
   NewSupport,
   SolvedSupport,
   Support,
@@ -41,6 +42,11 @@ export default function useBeam() {
     setSupportCnt(supportCnt + 1)
   }
 
+  function addLoad(load: NewLoad) {
+    const loadToAdd = { id: beam.loads.length, ...load }
+    setBeam({ ...beam, loads: [...beam.loads, loadToAdd] })
+  }
+
   function solveBeam() {
     const { supports, loads } = beam
 
@@ -66,6 +72,7 @@ export default function useBeam() {
     setStaticallyIndeterminate,
     supportVals,
     addSupport,
+    addLoad,
     solveBeam,
   }
 }

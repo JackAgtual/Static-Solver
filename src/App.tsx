@@ -3,8 +3,15 @@ import BeamForm from './components/BeamForm'
 import TableDisplay from './components/TableDisplay/TableDisplay'
 
 function App() {
-  const { beam, setBeam, staticallyIndeterminate, supportVals, addSupport, solveBeam } =
-    useBeam()
+  const {
+    beam,
+    setBeam,
+    staticallyIndeterminate,
+    supportVals,
+    addSupport,
+    addLoad,
+    solveBeam,
+  } = useBeam()
 
   return (
     <>
@@ -13,6 +20,7 @@ function App() {
         beam={beam}
         setBeam={setBeam}
         addSupport={addSupport}
+        addLoad={addLoad}
         solveBeam={solveBeam}
       />
       <TableDisplay
