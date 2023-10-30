@@ -10,6 +10,8 @@ type TableDisplayProps = {
 }
 
 function TableDisplay({ beam, supportVals, staticallyIndeterminate }: TableDisplayProps) {
+  if (beam.length === null) return
+
   return (
     <>
       <h2>Supports</h2>

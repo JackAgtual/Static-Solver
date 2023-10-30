@@ -33,6 +33,10 @@ function SupportsTable({ supports }: SupportsTableProps) {
     )
   })
 
+  if (supports.length === 0) {
+    return <div>You haven't added any supports</div>
+  }
+
   return (
     <table>
       <thead>

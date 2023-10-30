@@ -17,11 +17,11 @@ function BeamForm({ beam, setBeam, solveBeam }: BeamFormProps) {
         <>
           <SupportsForm beam={beam} setBeam={setBeam} />
           <LoadsForm beam={beam} setBeam={setBeam} />
+          <button type="button" onClick={solveBeam} disabled={beam.supports.length === 0}>
+            Solve beam
+          </button>
         </>
       )}
-      <button type="button" onClick={solveBeam}>
-        Solve beam
-      </button>
     </>
   )
 }

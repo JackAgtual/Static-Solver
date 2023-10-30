@@ -5,6 +5,10 @@ type LoadsTableProps = {
 }
 
 function LoadsTable({ loads }: LoadsTableProps) {
+  if (loads.length === 0) {
+    return <div>You haven't added any loads</div>
+  }
+
   return (
     <table>
       <thead>
