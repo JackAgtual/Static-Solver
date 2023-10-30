@@ -1,5 +1,6 @@
 import { Beam, SolvedSupport } from '../../types/staticAnalysis'
 import LoadsTable from './LoadsTable'
+import SolvedSupportsTable from './SolvedSupports'
 import SupportsTable from './SupportsTable'
 
 type TableDisplayProps = {
@@ -15,24 +16,10 @@ function TableDisplay({ beam, supportVals, staticallyIndeterminate }: TableDispl
       <SupportsTable supports={beam.supports} />
       <h2>Loads</h2>
       <LoadsTable loads={beam.loads} />
-      {supportVals !== null && (
-        <>
-          <h2>Load values</h2>
-          {staticallyIndeterminate ? (
-            <div>Statically indeterminate</div>
-          ) : (
-            <div>
-              {supportVals.map((support) => {
-                return (
-                  <div key={support.name}>
-                    {support.name}: {support.value}
-                  </div>
-                )
-              })}
-            </div>
-          )}
-        </>
-      )}
+      <SolvedSupportsTable
+        staticallyIndeterminate={staticallyIndeterminate}
+        supportVals={supportVals}
+      />
     </>
   )
 }
