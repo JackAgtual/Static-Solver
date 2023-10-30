@@ -3,12 +3,18 @@ import BeamForm from './components/BeamForm'
 import TableDisplay from './components/TableDisplay/TableDisplay'
 
 function App() {
-  const { beam, setBeam, staticallyIndeterminate, supportVals, solveBeam } = useBeam()
+  const { beam, setBeam, staticallyIndeterminate, supportVals, addSupport, solveBeam } =
+    useBeam()
 
   return (
     <>
       <div>Static solver</div>
-      <BeamForm beam={beam} setBeam={setBeam} solveBeam={solveBeam} />
+      <BeamForm
+        beam={beam}
+        setBeam={setBeam}
+        addSupport={addSupport}
+        solveBeam={solveBeam}
+      />
       <TableDisplay
         beam={beam}
         supportVals={supportVals}

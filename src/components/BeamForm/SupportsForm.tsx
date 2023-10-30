@@ -1,11 +1,13 @@
-import { useState, useRef } from 'react'
-import { BeamState, Support, SupportDirection } from '../../types/staticAnalysis'
+import { useRef } from 'react'
+import { Beam, NewSupport } from '../../types/staticAnalysis'
 import { clearValidation } from '../../utils/form'
 
-type SupportFormProps = BeamState
+type SupportFormProps = {
+  beam: Beam
+  addSupport: (support: NewSupport) => void
+}
 
-function SupportsForm({ beam, setBeam }: SupportFormProps) {
-  const [supportCnt, setSupportCnt] = useState(0)
+function SupportsForm({ beam, addSupport }: SupportFormProps) {
   const directionRef = useRef<HTMLInputElement | null>(null)
   const locationRef = useRef<HTMLInputElement | null>(null)
 
@@ -19,10 +21,10 @@ function SupportsForm({ beam, setBeam }: SupportFormProps) {
     const form = e.currentTarget
     const formData = new FormData(form)
     const x = Number(formData.get('location'))
-    const rx = !!formData.get('rx')
-    const ry = !!formData.get('ry')
-    const mz = !!formData.get('mz')
-    const noSupportSelected = !rx && !ry && !mz
+    const rfx = !!formData.get('rfx')
+    const rfy = !!formData.get('rfy')
+    const rmz = !!formData.get('rmz')
+    const noSupportSelected = !rfx && !rfy && !rmz
 
     if (supportExistsAtLocation(x)) {
       locationRef.current?.setCustomValidity('Support already exists at location')
@@ -37,20 +39,8 @@ function SupportsForm({ beam, setBeam }: SupportFormProps) {
       return
     }
 
-    const supports: Support[] = []
-    const id = supportCnt
-    if (rx) {
-      supports.push({ id, x, name: `R_Fx_${id}`, direction: SupportDirection.Fx })
-    }
-    if (ry) {
-      supports.push({ id, x, name: `R_Fy_${id}`, direction: SupportDirection.Fy })
-    }
-    if (mz) {
-      supports.push({ id, x, name: `R_Mz_${id}`, direction: SupportDirection.Mz })
-    }
-
-    setBeam({ ...beam, supports: [...beam.supports, ...supports] })
-    setSupportCnt(supportCnt + 1)
+    const supportToAdd: NewSupport = { x, rfx, rfy, rmz }
+    addSupport(supportToAdd)
     form.reset()
   }
 
@@ -75,17 +65,17 @@ function SupportsForm({ beam, setBeam }: SupportFormProps) {
           <input
             ref={directionRef}
             type="checkbox"
-            name="rx"
+            name="rfx"
             onChange={clearValidation}
           />
         </label>
         <label>
           <p>Force y</p>
-          <input type="checkbox" name="ry" onChange={clearValidation} />
+          <input type="checkbox" name="rfy" onChange={clearValidation} />
         </label>
         <label>
           <p>Moment z</p>
-          <input type="checkbox" name="mz" onChange={clearValidation} />
+          <input type="checkbox" name="rmz" onChange={clearValidation} />
         </label>
       </fieldset>
       <button type="submit">Add support</button>
