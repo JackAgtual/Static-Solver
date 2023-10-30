@@ -1,38 +1,13 @@
-import { BeamState, SolvedSupport } from '../../types/staticAnalysis'
+import { BeamState } from '../../types/staticAnalysis'
 import LengthForm from './LengthForm'
 import SupportsForm from './SupportsForm'
 import LoadsForm from './LoadsForm'
-import BeamAnalyzer from '../../services/beam-analyzer/BeamAnalyzer'
 
 type BeamFormProps = BeamState & {
-  setSupportVals: React.Dispatch<React.SetStateAction<SolvedSupport[] | null>>
-  setStaticallyIndeterminate: React.Dispatch<React.SetStateAction<boolean>>
+  solveBeam: () => void
 }
 
-function BeamForm({
-  beam,
-  setBeam,
-  setSupportVals,
-  setStaticallyIndeterminate,
-}: BeamFormProps) {
-  function solveBeam() {
-    const { supports, loads } = beam
-
-    const beamAnalyzer = new BeamAnalyzer({ supports, loads })
-    try {
-      const solvedSupportValues = beamAnalyzer.solveReactionForces()
-      // assume beam.supports and solvedSupportValues are the same length
-      setSupportVals(
-        beam.supports.map((support, idx) => ({
-          name: support.name,
-          value: Number(solvedSupportValues[idx]),
-        })),
-      )
-    } catch {
-      setStaticallyIndeterminate(true)
-    }
-  }
-
+function BeamForm({ beam, setBeam, solveBeam }: BeamFormProps) {
   return (
     <>
       <h1>Beam information</h1>

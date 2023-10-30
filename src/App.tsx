@@ -1,30 +1,14 @@
-import { useState, useEffect } from 'react'
-import { Beam, SolvedSupport } from './types/staticAnalysis'
+import useBeam from './hooks/useBeam'
 import BeamForm from './components/BeamForm'
 import TableDisplay from './components/TableDisplay/TableDisplay'
 
 function App() {
-  const [beam, setBeam] = useState<Beam>({
-    length: null,
-    supports: [],
-    loads: [],
-  })
-  const [supportVals, setSupportVals] = useState<null | SolvedSupport[]>(null)
-  const [staticallyIndeterminate, setStaticallyIndeterminate] = useState(false)
-
-  useEffect(() => {
-    setStaticallyIndeterminate(false)
-  }, [beam.supports])
+  const { beam, setBeam, staticallyIndeterminate, supportVals, solveBeam } = useBeam()
 
   return (
     <>
       <div>Static solver</div>
-      <BeamForm
-        beam={beam}
-        setBeam={setBeam}
-        setSupportVals={setSupportVals}
-        setStaticallyIndeterminate={setStaticallyIndeterminate}
-      />
+      <BeamForm beam={beam} setBeam={setBeam} solveBeam={solveBeam} />
       <TableDisplay
         beam={beam}
         supportVals={supportVals}
