@@ -6,9 +6,15 @@ import BeamAnalyzer from '../../services/beam-analyzer/BeamAnalyzer'
 
 type BeamFormProps = BeamState & {
   setSupportVals: React.Dispatch<React.SetStateAction<SolvedSupport[] | null>>
+  setStaticallyIndeterminate: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function BeamForm({ beam, setBeam, setSupportVals }: BeamFormProps) {
+function BeamForm({
+  beam,
+  setBeam,
+  setSupportVals,
+  setStaticallyIndeterminate,
+}: BeamFormProps) {
   function solveBeam() {
     const { supports, loads } = beam
 
@@ -22,8 +28,8 @@ function BeamForm({ beam, setBeam, setSupportVals }: BeamFormProps) {
           value: Number(solvedSupportValues[idx]),
         })),
       )
-    } catch (error) {
-      console.error(error)
+    } catch {
+      setStaticallyIndeterminate(true)
     }
   }
 
