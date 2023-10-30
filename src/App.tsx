@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Beam } from './types/staticAnalysis'
+import { Beam, SolvedSupport } from './types/staticAnalysis'
 import BeamForm from './components/BeamForm'
 import TableDisplay from './components/TableDisplay/TableDisplay'
 
@@ -9,12 +9,13 @@ function App() {
     supports: [],
     loads: [],
   })
+  const [supportVals, setSupportVals] = useState<null | SolvedSupport[]>(null)
 
   return (
     <>
       <div>Static solver</div>
-      <BeamForm beam={beam} setBeam={setBeam} />
-      <TableDisplay beam={beam} />
+      <BeamForm beam={beam} setBeam={setBeam} setSupportVals={setSupportVals} />
+      <TableDisplay beam={beam} supportVals={supportVals} />
     </>
   )
 }

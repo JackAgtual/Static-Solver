@@ -79,10 +79,9 @@ export default class BeamAnalyzer {
     // each row in a is a static equilibrium equation
     // if A is not square the system is statically indeterminate
 
-    const coefficientMatrix = this.#calculateCoefficientMatrix()
-    const columnVector = this.#calculateColumnVector()
-
     try {
+      const coefficientMatrix = this.#calculateCoefficientMatrix()
+      const columnVector = this.#calculateColumnVector()
       return lusolve(coefficientMatrix, columnVector)
         .toArray()
         .map((element) => {

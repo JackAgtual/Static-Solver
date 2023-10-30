@@ -27,6 +27,10 @@ export type Support = {
   name: string
 }
 
+export type SolvedSupport = {
+  name: string
+  value: number
+}
 export type Beam = {
   length: number | null
   supports: Support[]

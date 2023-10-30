@@ -1,11 +1,32 @@
-import { BeamState } from '../../types/staticAnalysis'
+import { BeamState, SolvedSupport } from '../../types/staticAnalysis'
 import LengthForm from './LengthForm'
 import SupportsForm from './SupportsForm'
 import LoadsForm from './LoadsForm'
+import BeamAnalyzer from '../../services/beam-analyzer/BeamAnalyzer'
 
-type BeamFormProps = BeamState
+type BeamFormProps = BeamState & {
+  setSupportVals: React.Dispatch<React.SetStateAction<SolvedSupport[] | null>>
+}
 
-function BeamForm({ beam, setBeam }: BeamFormProps) {
+function BeamForm({ beam, setBeam, setSupportVals }: BeamFormProps) {
+  function solveBeam() {
+    const { supports, loads } = beam
+
+    const beamAnalyzer = new BeamAnalyzer({ supports, loads })
+    try {
+      const solvedSupportValues = beamAnalyzer.solveReactionForces()
+      // assume beam.supports and solvedSupportValues are the same length
+      setSupportVals(
+        beam.supports.map((support, idx) => ({
+          name: support.name,
+          value: Number(solvedSupportValues[idx]),
+        })),
+      )
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <>
       <h1>Beam information</h1>
@@ -17,6 +38,9 @@ function BeamForm({ beam, setBeam }: BeamFormProps) {
           <LoadsForm beam={beam} setBeam={setBeam} />
         </>
       )}
+      <button type="button" onClick={solveBeam}>
+        Solve beam
+      </button>
     </>
   )
 }
