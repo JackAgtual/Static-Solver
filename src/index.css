@@ -1,9 +1,22 @@
 :root {
-  --color-primary: rgba(222, 99, 22, 0.6);
+  --color-primary: rgba(241, 171, 134, 1);
 }
 
 * {
   margin: 0;
   font-family: 'Roboto', sans-serif;
   box-sizing: border-box;
+}
+
+button {
+  background-color: transparent;
+  border: 3px solid var(--color-primary);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+input {
+  padding: 0.5rem;
+  border-width: 1px;
+  border-radius: 5px;
 }

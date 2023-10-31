@@ -1,4 +1,5 @@
-import { BeamState } from '../../types/staticAnalysis'
+import style from './LengthForm.module.css'
+import { BeamState } from '../../../types/staticAnalysis'
 
 type LengthFormProps = BeamState
 
@@ -15,11 +16,11 @@ function LengthForm({ beam, setBeam }: LengthFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        <p>Enter beam length</p>
-        <input required type="number" name="length" min={1} />
+    <form className={style.form} onSubmit={handleSubmit}>
+      <label className={style.label} htmlFor="lengthInput">
+        Enter beam length
       </label>
+      <input required type="number" name="length" id="lengthInput" min={1} />
       <button type="submit">Set Length</button>
     </form>
   )
