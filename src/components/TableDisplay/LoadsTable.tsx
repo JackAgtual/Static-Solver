@@ -1,4 +1,5 @@
 import { Load } from '../../types/staticAnalysis'
+import style from './Table.module.css'
 
 type LoadsTableProps = {
   loads: Load[]
@@ -10,7 +11,7 @@ function LoadsTable({ loads }: LoadsTableProps) {
   }
 
   return (
-    <table>
+    <table className={style.table}>
       <thead>
         <tr>
           <th>Name</th>

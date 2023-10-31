@@ -1,4 +1,5 @@
 import { Support, SupportDirection } from '../../types/staticAnalysis'
+import style from './Table.module.css'
 
 type SupportsTableProps = {
   supports: Support[]
@@ -38,7 +39,7 @@ function SupportsTable({ supports }: SupportsTableProps) {
   }
 
   return (
-    <table>
+    <table className={style.table}>
       <thead>
         <tr>
           <th>Name</th>
