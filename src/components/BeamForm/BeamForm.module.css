@@ -1,0 +1,13 @@
+.formWrapper > *:not(:last-child) {
+  /* border: 3px solid red; */
+  padding: 1rem 0;
+  border-bottom: 2px solid grey;
+}
+
+.formWrapper > *:last-child {
+  margin-top: 1rem;
+}
+
+.formTitle {
+  padding-bottom: 0.25rem;
+}
