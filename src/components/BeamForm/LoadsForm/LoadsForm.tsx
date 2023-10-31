@@ -1,6 +1,7 @@
 import { useRef } from 'react'
-import { Beam, NewLoad } from '../../types/staticAnalysis'
-import { clearValidation } from '../../utils/form'
+import { Beam, NewLoad } from '../../../types/staticAnalysis'
+import { clearValidation } from '../../../utils/form'
+import style from './LoadsForm.module.css'
 
 type LoadFormProps = {
   beam: Beam
@@ -46,9 +47,9 @@ function LoadsForm({ beam, addLoad }: LoadFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        <p>Location</p>
+    <form className={style.container} onSubmit={handleSubmit}>
+      <div className={style.location}>
+        <label htmlFor="loadLocation">Location</label>
         <input
           required
           ref={locationRef}
@@ -57,22 +58,31 @@ function LoadsForm({ beam, addLoad }: LoadFormProps) {
           min={0}
           max={beam.length ?? ''}
           onChange={clearValidation}
+          id="loadLocation"
         />
-      </label>
+      </div>
       <fieldset>
         <legend>Magnitude and direction</legend>
-        <label>
-          <p>Fx</p>
-          <input ref={magnitudeRef} type="number" name="fx" onChange={clearValidation} />
-        </label>
-        <label>
-          <p>Fy</p>
-          <input type="number" name="fy" onChange={clearValidation} />
-        </label>
-        <label>
-          <p>Mz</p>
-          <input type="number" name="mz" onChange={clearValidation} />
-        </label>
+        <div className={style.loadsInputWrapper}>
+          <div className={style.inputWrapper}>
+            <label htmlFor="fx">Force in x direction</label>
+            <input
+              ref={magnitudeRef}
+              type="number"
+              name="fx"
+              onChange={clearValidation}
+              id="fx"
+            />
+          </div>
+          <div className={style.inputWrapper}>
+            <label>Force in y direction</label>
+            <input type="number" name="fy" onChange={clearValidation} id="fy" />
+          </div>
+          <div className={style.inputWrapper}>
+            <label>Moment about z axis</label>
+            <input type="number" name="mz" onChange={clearValidation} id="mz" />
+          </div>
+        </div>
       </fieldset>
       <button type="submit">Add load</button>
     </form>

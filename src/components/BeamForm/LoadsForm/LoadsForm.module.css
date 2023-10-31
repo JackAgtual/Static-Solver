@@ -1,0 +1,21 @@
+.container > *:not(:first-child) {
+  margin-top: 1rem;
+}
+
+.location {
+  display: flex;
+  flex-direction: column;
+}
+
+.loadsInputWrapper > .inputWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.loadsInputWrapper > .inputWrapper:not(:first-child) {
+  margin-top: 0.5rem;
+}
+
+.inputWrapper > :last-child {
+  margin-top: 0.1rem;
+}
