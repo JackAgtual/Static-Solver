@@ -1,6 +1,7 @@
 import { useRef } from 'react'
-import { Beam, NewSupport } from '../../types/staticAnalysis'
-import { clearValidation } from '../../utils/form'
+import { Beam, NewSupport } from '../../../types/staticAnalysis'
+import { clearValidation } from '../../../utils/form'
+import style from './SupportsForm.module.css'
 
 type SupportFormProps = {
   beam: Beam
@@ -45,9 +46,9 @@ function SupportsForm({ beam, addSupport }: SupportFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        <p>x location</p>
+    <form className={style.container} onSubmit={handleSubmit}>
+      <div className={style.location}>
+        <label htmlFor="supportLocation">x location</label>
         <input
           ref={locationRef}
           required
@@ -56,27 +57,30 @@ function SupportsForm({ beam, addSupport }: SupportFormProps) {
           min={0}
           max={beam.length ?? ''}
           onChange={clearValidation}
+          id="supportLocation"
         />
-      </label>
+      </div>
       <fieldset>
         <legend>Support direction</legend>
-        <label>
-          <p>Force x</p>
-          <input
-            ref={directionRef}
-            type="checkbox"
-            name="rfx"
-            onChange={clearValidation}
-          />
-        </label>
-        <label>
-          <p>Force y</p>
-          <input type="checkbox" name="rfy" onChange={clearValidation} />
-        </label>
-        <label>
-          <p>Moment z</p>
-          <input type="checkbox" name="rmz" onChange={clearValidation} />
-        </label>
+        <div className={style.checkboxContainer}>
+          <label className={style.label}>
+            <input
+              ref={directionRef}
+              type="checkbox"
+              name="rfx"
+              onChange={clearValidation}
+            />
+            <p>Force x</p>
+          </label>
+          <label className={style.label}>
+            <input type="checkbox" name="rfy" onChange={clearValidation} />
+            <p>Force y</p>
+          </label>
+          <label className={style.label}>
+            <input type="checkbox" name="rmz" onChange={clearValidation} />
+            <p>Moment z</p>
+          </label>
+        </div>
       </fieldset>
       <button type="submit">Add support</button>
     </form>

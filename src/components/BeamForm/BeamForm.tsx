@@ -17,7 +17,9 @@ function BeamForm({ beam, setBeam, addSupport, addLoad, solveBeam }: BeamFormPro
         <LengthForm beam={beam} setBeam={setBeam} />
       ) : (
         <>
+          <h2>Beam supports</h2>
           <SupportsForm beam={beam} addSupport={addSupport} />
+          <h2>Beam loads</h2>
           <LoadsForm beam={beam} addLoad={addLoad} />
           <button type="button" onClick={solveBeam} disabled={beam.supports.length === 0}>
             Solve beam

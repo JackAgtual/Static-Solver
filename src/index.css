@@ -20,3 +20,11 @@ input {
   border-width: 1px;
   border-radius: 5px;
 }
+
+main {
+  padding: 1rem;
+}
+
+fieldset {
+  border-radius: 4px;
+}

@@ -17,18 +17,20 @@ function App() {
   return (
     <>
       <Header />
-      <BeamForm
-        beam={beam}
-        setBeam={setBeam}
-        addSupport={addSupport}
-        addLoad={addLoad}
-        solveBeam={solveBeam}
-      />
-      <TableDisplay
-        beam={beam}
-        supportVals={supportVals}
-        staticallyIndeterminate={staticallyIndeterminate}
-      />
+      <main>
+        <BeamForm
+          beam={beam}
+          setBeam={setBeam}
+          addSupport={addSupport}
+          addLoad={addLoad}
+          solveBeam={solveBeam}
+        />
+        <TableDisplay
+          beam={beam}
+          supportVals={supportVals}
+          staticallyIndeterminate={staticallyIndeterminate}
+        />
+      </main>
     </>
   )
 }

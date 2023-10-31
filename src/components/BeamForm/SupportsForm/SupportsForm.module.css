@@ -1,0 +1,18 @@
+.container > *:not(:first-child) {
+  margin-top: 1rem;
+}
+
+.location {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  display: flex;
+  column-gap: 0.25rem;
+}
+
+.checkboxContainer {
+  display: flex;
+  column-gap: 1rem;
+}
