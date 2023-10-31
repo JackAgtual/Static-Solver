@@ -12,7 +12,7 @@ type BeamFormProps = BeamState & {
 
 function BeamForm({ beam, setBeam, addSupport, addLoad, solveBeam }: BeamFormProps) {
   return (
-    <>
+    <div>
       <h1>Beam information</h1>
       {beam.length === null ? (
         <LengthForm beam={beam} setBeam={setBeam} />
@@ -26,12 +26,17 @@ function BeamForm({ beam, setBeam, addSupport, addLoad, solveBeam }: BeamFormPro
             <h2 className={style.formTitle}>Beam loads</h2>
             <LoadsForm beam={beam} addLoad={addLoad} />
           </div>
-          <button type="button" onClick={solveBeam} disabled={beam.supports.length === 0}>
+          <button
+            className={style.mainBtn}
+            type="button"
+            onClick={solveBeam}
+            disabled={beam.supports.length === 0}
+          >
             Solve beam
           </button>
         </div>
       )}
-    </>
+    </div>
   )
 }
 

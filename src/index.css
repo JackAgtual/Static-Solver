@@ -25,6 +25,10 @@ main {
   padding: 1rem;
 }
 
+main > *:not(:first-child) {
+  margin-top: 2rem;
+}
+
 fieldset {
   border-radius: 4px;
 }

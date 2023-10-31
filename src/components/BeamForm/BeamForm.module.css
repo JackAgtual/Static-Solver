@@ -11,3 +11,9 @@
 .formTitle {
   padding-bottom: 0.25rem;
 }
+
+.mainBtn {
+  background-color: var(--color-primary);
+  width: 100%;
+  font-size: larger;
+}
