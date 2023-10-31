@@ -1,4 +1,5 @@
 import useBeam from './hooks/useBeam'
+import Header from './components/Header'
 import BeamForm from './components/BeamForm'
 import TableDisplay from './components/TableDisplay/TableDisplay'
 
@@ -15,7 +16,7 @@ function App() {
 
   return (
     <>
-      <div>Static solver</div>
+      <Header />
       <BeamForm
         beam={beam}
         setBeam={setBeam}

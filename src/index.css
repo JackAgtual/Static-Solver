@@ -1,4 +1,9 @@
+:root {
+  --color-primary: rgba(222, 99, 22, 0.6);
+}
+
 * {
   margin: 0;
   font-family: 'Roboto', sans-serif;
+  box-sizing: border-box;
 }
