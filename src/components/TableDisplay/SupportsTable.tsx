@@ -1,11 +1,13 @@
 import { Support, SupportDirection } from '../../types/staticAnalysis'
 import style from './Table.module.css'
+import { BsFillTrashFill } from 'react-icons/bs'
 
 type SupportsTableProps = {
   supports: Support[]
+  removeSupport: (idToRemove: number) => void
 }
 
-function SupportsTable({ supports }: SupportsTableProps) {
+function SupportsTable({ supports, removeSupport }: SupportsTableProps) {
   const ids = new Set(supports.map((support) => support.id))
   const combinedSupports = Array.from(ids).map((id) => {
     const supportsWithId = supports.filter((support) => support.id == id)
@@ -53,7 +55,16 @@ function SupportsTable({ supports }: SupportsTableProps) {
         {combinedSupports.map((support) => {
           return (
             <tr key={support.id}>
-              <td>{support.id}</td>
+              <td>
+                <div className={style.info}>
+                  <p>{support.id}</p>
+                  <div>
+                    <button onClick={() => removeSupport(support.id)}>
+                      <BsFillTrashFill />
+                    </button>
+                  </div>
+                </div>
+              </td>
               <td>{support.x}</td>
               <td>{support.rfx ? '1' : '0'}</td>
               <td>{support.rfy ? '1' : '0'}</td>

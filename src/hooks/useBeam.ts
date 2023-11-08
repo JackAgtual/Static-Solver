@@ -47,6 +47,40 @@ export default function useBeam() {
     setBeam({ ...beam, loads: [...beam.loads, loadToAdd] })
   }
 
+  function removeSupport(idToRemove: number) {
+    const updatedSupports = beam.supports
+      .filter((support) => support.id !== idToRemove)
+      .map((support) => {
+        let id = support.id
+
+        if (id >= idToRemove) {
+          // shift id for all supports after removed support
+          id--
+        }
+
+        let name
+        switch (support.direction) {
+          case SupportDirection.Fx:
+            name = `R_Fx_${id}`
+            break
+          case SupportDirection.Fy:
+            name = `R_Fy_${id}`
+            break
+          case SupportDirection.Mz:
+            name = `R_Mz_${id}`
+            break
+        }
+
+        return {
+          ...support,
+          id,
+          name,
+        }
+      })
+    setSupportCnt(supportCnt - 1)
+    setBeam({ ...beam, supports: updatedSupports })
+  }
+
   function solveBeam() {
     const { supports, loads } = beam
 
@@ -73,6 +107,7 @@ export default function useBeam() {
     supportVals,
     addSupport,
     addLoad,
+    removeSupport,
     solveBeam,
   }
 }
