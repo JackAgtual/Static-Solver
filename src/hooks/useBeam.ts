@@ -81,6 +81,13 @@ export default function useBeam() {
     setBeam({ ...beam, supports: updatedSupports })
   }
 
+  function removeLoad(idToRemove: number) {
+    const updatedLoads = beam.loads
+      .filter((load) => load.id !== idToRemove)
+      .map((load, id) => ({ ...load, id }))
+    setBeam({ ...beam, loads: updatedLoads })
+  }
+
   function solveBeam() {
     const { supports, loads } = beam
 
@@ -108,6 +115,7 @@ export default function useBeam() {
     addSupport,
     addLoad,
     removeSupport,
+    removeLoad,
     solveBeam,
   }
 }

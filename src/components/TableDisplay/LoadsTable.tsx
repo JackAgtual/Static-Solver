@@ -1,11 +1,13 @@
 import { Load } from '../../types/staticAnalysis'
 import style from './Table.module.css'
+import { BsFillTrashFill } from 'react-icons/bs'
 
 type LoadsTableProps = {
   loads: Load[]
+  removeLoad: (idToRemove: number) => void
 }
 
-function LoadsTable({ loads }: LoadsTableProps) {
+function LoadsTable({ loads, removeLoad }: LoadsTableProps) {
   if (loads.length === 0) {
     return <div>You haven't added any loads</div>
   }
@@ -25,7 +27,16 @@ function LoadsTable({ loads }: LoadsTableProps) {
         {loads.map((load) => {
           return (
             <tr key={load.id}>
-              <td>{load.id}</td>
+              <td>
+                <div className={style.info}>
+                  <p>{load.id}</p>
+                  <div>
+                    <button onClick={() => removeLoad(load.id)}>
+                      <BsFillTrashFill />
+                    </button>
+                  </div>
+                </div>
+              </td>
               <td>{load.x}</td>
               <td>{load.fx}</td>
               <td>{load.fy}</td>

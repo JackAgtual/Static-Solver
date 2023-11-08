@@ -8,6 +8,7 @@ type TableDisplayProps = {
   supportVals: null | SolvedSupport[]
   staticallyIndeterminate: boolean
   removeSupport: (idToRemove: number) => void
+  removeLoad: (idToRemove: number) => void
 }
 
 function TableDisplay({
@@ -15,6 +16,7 @@ function TableDisplay({
   supportVals,
   staticallyIndeterminate,
   removeSupport,
+  removeLoad,
 }: TableDisplayProps) {
   if (beam.length === null) return
 
@@ -24,7 +26,7 @@ function TableDisplay({
       <h2>Supports</h2>
       <SupportsTable supports={beam.supports} removeSupport={removeSupport} />
       <h2>Loads</h2>
-      <LoadsTable loads={beam.loads} />
+      <LoadsTable loads={beam.loads} removeLoad={removeLoad} />
       <SolvedSupportsTable
         staticallyIndeterminate={staticallyIndeterminate}
         supportVals={supportVals}

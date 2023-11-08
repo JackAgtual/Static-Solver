@@ -12,6 +12,7 @@ function App() {
     addSupport,
     addLoad,
     removeSupport,
+    removeLoad,
     solveBeam,
   } = useBeam()
 
@@ -31,6 +32,7 @@ function App() {
           supportVals={supportVals}
           staticallyIndeterminate={staticallyIndeterminate}
           removeSupport={removeSupport}
+          removeLoad={removeLoad}
         />
       </main>
     </>
